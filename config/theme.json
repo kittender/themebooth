@@ -1,0 +1,23 @@
+{
+    "theme": "my-theme",
+    "themeTitle": "My theme",
+    "description": "A generated demo theme",
+    "version": "1.0",
+    "author": "Kittender",
+    "email": "kittender@vivaldi.net",
+    "uuid": "kittez",
+    "targets": ["intellij"],
+
+    "variables": {
+        "red": "ff0000",
+        "orange": "000000",
+        "yellow": "000000",
+        "lime": "000000",
+        "green": "00ff00",
+        "cyan": "000000",
+        "blue": "0000ff",
+        "purple": "000000",
+        "violet": "000000",
+        "pink": "000000"
+    }
+}

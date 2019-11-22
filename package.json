@@ -1,0 +1,27 @@
+{
+  "name": "themebooth",
+  "version": "0.0.0",
+  "description": "Theme Booth allows you to create syntax highlighting for many platforms",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "syntax",
+    "highlighting",
+    "highlight",
+    "theme",
+    "develop",
+    "grammar",
+    "code",
+    "colors",
+    "color"
+  ],
+  "author": "Kittender",
+  "license": "MIT",
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-replace-name": "^1.0.1",
+    "through2": "^3.0.1"
+  }
+}

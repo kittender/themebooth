@@ -1,0 +1,238 @@
+<scheme name="@@themeTitle##" version="@@version##" parent_scheme="@@parent##">
+  <colors>
+    <option name="CARET_ROW_COLOR" value="@@CARET_ROW_COLOR##" />
+    <option name="CONSOLE_BACKGROUND_KEY" value="@@CONSOLE_BACKGROUND_KEY##" />
+    <option name="DOCUMENTATION_COLOR" value="@@DOCUMENTATION_COLOR##" />
+    <option name="FOLDED_TEXT_BORDER_COLOR" value="@@FOLDED_TEXT_BORDER_COLOR##" />
+    <option name="GUTTER_BACKGROUND" value="@@GUTTER_BACKGROUND##" />
+    <option name="INDENT_GUIDE" value="@@INDENT_GUIDE##" />
+    <option name="INFORMATION_HINT" value="@@INFORMATION_HINT##" />
+    <option name="LINE_NUMBERS_COLOR" value="@@LINE_NUMBERS_COLOR##" />
+    <option name="LINE_NUMBER_ON_CARET_ROW_COLOR" value="@@LINE_NUMBER_ON_CARET_ROW_COLOR##" />
+    <option name="NOTIFICATION_BACKGROUND" value="@@NOTIFICATION_BACKGROUND##" />
+    <option name="RECENT_LOCATIONS_SELECTION" value="@@RECENT_LOCATIONS_SELECTION##" />
+    <option name="RIGHT_MARGIN_COLOR" value="@@RIGHT_MARGIN_COLOR##" />
+    <option name="SELECTED_INDENT_GUIDE" value="@@SELECTED_INDENT_GUIDE##" />
+    <option name="SELECTED_TEARLINE_COLOR" value="@@SELECTED_TEARLINE_COLOR##" />
+    <option name="SELECTION_BACKGROUND" value="@@SELECTION_BACKGROUND##" />
+    <option name="SEPARATOR_BELOW_COLOR" value="@@SEPARATOR_BELOW_COLOR##" />
+    <option name="ScrollBar.Mac.hoverThumbColor" value="@@SCROLLBAR_MAC_HOVER_THUMB_COLOR##" />
+    <option name="ScrollBar.Mac.thumbColor" value="@@SCROLLBAR_MAC_THUMB_COLOR##" />
+    <option name="TEARLINE_COLOR" value="@@TEARLINE_COLOR##" />
+    <option name="VISUAL_INDENT_GUIDE" value="@@VISUAL_INDENT_GUIDE##" />
+  </colors>
+  <attributes>
+    <option name="BREADCRUMBS_CURRENT">
+      <value>
+        <option name="FOREGROUND" value="@@BREADCRUMBS_CURRENT_FOREGROUND##" />
+        <option name="BACKGROUND" value="@@BREADCRUMBS_CURRENT_BACKGROUND##" />
+      </value>
+    </option>
+    <option name="BREADCRUMBS_HOVERED">
+      <value>
+        <option name="FOREGROUND" value="@@BREADCRUMBS_HOVERED_FOREGROUND##" />
+        <option name="BACKGROUND" value="@@BREADCRUMBS_HOVERED_BACKGROUND##" />
+      </value>
+    </option>
+    <option name="CTRL_CLICKABLE">
+      <value>
+        <option name="FOREGROUND" value="@@CTRL_CLICKABLE_FOREGROUND##" />
+        <option name="FONT_TYPE" value="@@CTRL_CLICKABLE_FONT_TYPE##" />
+        <option name="EFFECT_COLOR" value="@@CTRL_CLICKABLE_EFFECT_COLOR##" />
+        <option name="EFFECT_TYPE" value="@@CTRL_CLICKABLE_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="DEFAULT_BLOCK_COMMENT">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_BLOCK_COMMENT_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_CLASS_NAME">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_CLASS_NAME_FOREGROUND##" />
+        <option name="FONT_TYPE" value="@@DEFAULT_CLASS_NAME_FONT_TYPE##" />
+      </value>
+    </option>
+    <option name="DEFAULT_CONSTANT">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_CONSTANT_FOREGROUND##" />
+        <option name="FONT_TYPE" value="@@DEFAULT_CONSTANT_FONT_TYPE##" />
+        <option name="EFFECT_TYPE" value="@@DEFAULT_CONSTANT_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="DEFAULT_DOC_COMMENT">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_DOC_COMMENT_FOREGROUND##" />
+        <option name="FONT_TYPE" value="@@DEFAULT_DOC_COMMENT_FONT_TYPE##" />
+      </value>
+    </option>
+    <option name="DEFAULT_DOC_COMMENT_TAG">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_DOC_COMMENT_TAG_FOREGROUND##" />
+        <option name="FONT_TYPE" value="@@DEFAULT_DOC_COMMENT_TAG_FONT_TYPE##" />
+        <option name="EFFECT_COLOR" value="@@DEFAULT_DOC_COMMENT_TAG_EFFECT_COLOR##" />
+        <option name="EFFECT_TYPE" value="@@DEFAULT_DOC_COMMENT_TAG_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="DEFAULT_DOC_COMMENT_TAG_VALUE">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_DOC_COMMENT_TAG_VALUE_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_DOC_MARKUP">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_DOC_MARKUP_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_FUNCTION_DECLARATION">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_FUNCTION_DECLARATION_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_GLOBAL_VARIABLE">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_GLOBAL_VARIABLE_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_IDENTIFIER">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_IDENTIFIER_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_INTERFACE_NAME">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_INTERFACE_NAME_FOREGROUND##" />
+        <option name="FONT_TYPE" value="@@DEFAULT_INTERFACE_NAME_FONT_TYPE##" />
+      </value>
+    </option>
+    <option name="DEFAULT_INVALID_STRING_ESCAPE">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_INVALID_STRING_ESCAPE_FOREGROUND##" />
+        <option name="FONT_TYPE" value="@@DEFAULT_INVALID_STRING_ESCAPE_FONT_TYPE##" />
+        <option name="EFFECT_COLOR" value="@@DEFAULT_INVALID_STRING_ESCAPE_EFFECT_COLOR##" />
+        <option name="EFFECT_TYPE" value="@@DEFAULT_INVALID_STRING_ESCAPE_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="DEFAULT_KEYWORD">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_KEYWORD_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_LOCAL_VARIABLE">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_LOCAL_VARIABLE_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_PARAMETER">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_PARAMETER_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_REASSIGNED_LOCAL_VARIABLE" baseAttributes="DEFAULT_LOCAL_VARIABLE" />
+    <option name="DEFAULT_REASSIGNED_PARAMETER" baseAttributes="DEFAULT_PARAMETER" />
+    <option name="DEFAULT_STRING">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_STRING_FOREGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_TEMPLATE_LANGUAGE_COLOR">
+      <value>
+        <option name="BACKGROUND" value="@@DEFAULT_TEMPLATE_LANGUAGE_COLOR_BACKGROUND##" />
+      </value>
+    </option>
+    <option name="DEFAULT_VALID_STRING_ESCAPE">
+      <value>
+        <option name="FOREGROUND" value="@@DEFAULT_VALID_STRING_ESCAPE_FOREGROUND##" />
+        <option name="FONT_TYPE" value="@@DEFAULT_VALID_STRING_ESCAPE_FONT_TYPE##" />
+      </value>
+    </option>
+    <option name="DEPRECATED_ATTRIBUTES">
+      <value>
+        <option name="EFFECT_COLOR" value="@@DEPRECATED_ATTRIBUTES_EFFECT_COLOR##" />
+        <option name="EFFECT_TYPE" value="@@DEPRECATED_ATTRIBUTES_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="DUPLICATE_FROM_SERVER">
+      <value>
+        <option name="BACKGROUND" value="@@DUPLICATE_FROM_SERVER_BACKGROUND##" />
+      </value>
+    </option>
+    <option name="ERRORS_ATTRIBUTES">
+      <value>
+        <option name="EFFECT_COLOR" value="@@ERRORS_ATTRIBUTES_EFFECT_COLOR##" />
+        <option name="ERROR_STRIPE_COLOR" value="@@ERRORS_ATTRIBUTES_ERROR_STRIPE_COLOR##" />
+        <option name="EFFECT_TYPE" value="@@ERRORS_ATTRIBUTES_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="FOLDED_TEXT_ATTRIBUTES">
+      <value>
+        <option name="FOREGROUND" value="@@FOLDED_TEXT_ATTRIBUTES_FOREGROUND##" />
+        <option name="BACKGROUND" value="@@FOLDED_TEXT_ATTRIBUTES_BACKGROUND##" />
+      </value>
+    </option>
+    <option name="FOLLOWED_HYPERLINK_ATTRIBUTES">
+      <value>
+        <option name="FOREGROUND" value="@@FOLLOWED_HYPERLINK_ATTRIBUTES_FOREGROUND##" />
+        <option name="FONT_TYPE" value="@@FOLLOWED_HYPERLINK_ATTRIBUTES_FONT_TYPE##" />
+        <option name="EFFECT_COLOR" value="@@FOLLOWED_HYPERLINK_ATTRIBUTES_EFFECT_COLOR##" />
+        <option name="EFFECT_TYPE" value="@@FOLLOWED_HYPERLINK_ATTRIBUTES_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="INJECTED_LANGUAGE_FRAGMENT">
+      <value>
+        <option name="BACKGROUND" value="@@INJECTED_LANGUAGE_FRAGMENT_BACKGROUND##" />
+      </value>
+    </option>
+    <option name="INLINE_PARAMETER_HINT">
+      <value>
+        <option name="FOREGROUND" value="@@INLINE_PARAMETER_HINT_FOREGROUND##" />
+        <option name="BACKGROUND" value="@@INLINE_PARAMETER_HINT_BACKGROUND##" />
+      </value>
+    </option>
+    <option name="INLINE_PARAMETER_HINT_HIGHLIGHTED">
+      <value>
+        <option name="FOREGROUND" value="@@INLINE_PARAMETER_HINT_HIGHLIGHTED_FOREGROUND##" />
+        <option name="BACKGROUND" value="@@INLINE_PARAMETER_HINT_HIGHLIGHTED_BACKGROUND##" />
+      </value>
+    </option>
+    <option name="NOT_USED_ELEMENT_ATTRIBUTES">
+      <value>
+        <option name="FOREGROUND" value="@@NOT_USED_ELEMENT_ATTRIBUTES_FOREGROUND##" />
+        <option name="EFFECT_TYPE" value="@@NOT_USED_ELEMENT_ATTRIBUTES_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="SEARCH_RESULT_ATTRIBUTES">
+      <value>
+        <option name="BACKGROUND" value="@@SEARCH_RESULT_ATTRIBUTES_BACKGROUND##" />
+        <option name="ERROR_STRIPE_COLOR" value="@@SEARCH_RESULT_ATTRIBUTES_ERROR_STRIPE_COLOR##" />
+      </value>
+    </option>
+    <option name="TEXT">
+      <value>
+        <option name="FOREGROUND" value="@@TEXT_FOREGROUND##" />
+        <option name="BACKGROUND" value="@@TEXT_BACKGROUND##" />
+        <option name="EFFECT_TYPE" value="@@TEXT_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="TEXT_SEARCH_RESULT_ATTRIBUTES">
+      <value>
+        <option name="BACKGROUND" value="@@TEXT_SEARCH_RESULT_ATTRIBUTES_BACKGROUND##" />
+        <option name="EFFECT_COLOR" value="@@TEXT_SEARCH_RESULT_ATTRIBUTES_EFFECT_COLOR##" />
+        <option name="ERROR_STRIPE_COLOR" value="@@TEXT_SEARCH_RESULT_ATTRIBUTES_ERROR_STRIPE_COLOR##" />
+      </value>
+    </option>
+    <option name="WARNING_ATTRIBUTES">
+      <value>
+        <option name="BACKGROUND" value="@@WARNING_ATTRIBUTES_BACKGROUND##" />
+        <option name="ERROR_STRIPE_COLOR" value="@@WARNING_ATTRIBUTES_ERROR_STRIPE_COLOR##" />
+        <option name="EFFECT_TYPE" value="@@WARNING_ATTRIBUTES_EFFECT_TYPE##" />
+      </value>
+    </option>
+    <option name="WRITE_SEARCH_RESULT_ATTRIBUTES">
+      <value>
+        <option name="BACKGROUND" value="@@WRITE_SEARCH_RESULT_ATTRIBUTES_BACKGROUND##" />
+        <option name="ERROR_STRIPE_COLOR" value="@@WRITE_SEARCH_RESULT_ATTRIBUTES_ERROR_STRIPE_COLOR##" />
+      </value>
+    </option>
+  </attributes>
+</scheme>

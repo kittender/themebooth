@@ -1,0 +1,28 @@
+<idea-plugin>
+  <id>com.@@author##.@@theme##</id>
+  <name>@@themeTitle##</name>
+  <version>@@version##</version>
+  <vendor email="@@email##">@@author##</vendor>
+
+  <description>
+      @@description##
+  </description>
+
+  
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="191.0"/>
+
+  <depends>com.intellij.modules.lang</depends>
+
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+    <themeProvider id="@@uuid##" path="/@@theme##.theme.json"/>
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
