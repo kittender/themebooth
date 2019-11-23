@@ -2,11 +2,15 @@ var fs = require("fs");
 var gulp = require("gulp");
 var replaceName = require('gulp-replace-name');
 var thematizer = require("../../thematizer.js");
+var uuid = require('uuid/v1');
 var log = console.log;
 
 module.exports = function (themeConfig, destination) {
 
     var context = "config/editors/intellij/";
+    
+    // Theme needs a UUID
+    themeConfig.uuid = uuid();
 
     // Theme definition plugin
 

@@ -1,0 +1,8 @@
+{
+ "name": "@@theme##",
+ "dark": @@dark##,
+ "author": "@@author##",
+ "editorScheme": "/@@theme##.xml",
+ "ui": {
+ }
+}

@@ -1,0 +1,510 @@
+{
+    "name": "@@themeTitle##",
+    "author": "@@author##",
+    "globals":
+    {
+        "background": "@@editor_background##",
+        "foreground": "@@editor_text##",
+        "line_highlight": "@@editor_line_highlight##",
+        "gutter": "@@editor_gutter##",
+        
+        "caret": "@@editor_caret##",
+        "block_caret": "@@editor_block_caret",
+        
+        "minimap_border": "@@editor_minimap_border##",
+        "invisibles": "@@editor-invisibles##",
+        "misspelling": "@@editor-misspelling_underline##",
+
+        "highlight": "@@editor_highlight##",
+        "find_highlight": "@@editor_find_highlight##",
+        "find_highlight_foreground": "@@editor_find_highlight_foreground##",
+
+        "accent": "@@editor_accent##",
+        "fold_marker": "@@editor_fold_marker##",
+
+        "guide": "@@editor_guide##",
+        "active_guide": "@@editor_active_guide##",
+        "stack_guide": "@@editor_stack_guide##",
+
+        "selection": "@@editor_selection##",
+        "selection_border": "@@editor_selection_border##",
+        "inactive_selection": "@@editor_inactive_selection##",
+
+        "brackets_options": "@@editor_brackets_options##",
+        "brackets_foreground": "@@editor_brackets_foreground##",
+        "bracket_contents_options": "@@editor_bracket_contents_options##",
+        "bracket_contents_foreground": "@@editor_bracket_contents_foreground##",
+        "tags_options": "@@editor_tags_options##",
+        "tags_foreground": "@@editor_tags_foreground##",
+
+        "shadow": "@@editor_shadow##",
+        "shadow_width": "@@editor_shadow_width##",
+
+        "line_diff_added" : "@@editor_line_diff_added##",
+        "line_diff_modified" : "@@editor_line_diff_modified##"
+    },
+    
+    "rules":
+    [
+        {
+            "name": "Comment",
+            "scope": "comment, meta.documentation",
+            "foreground": "@@comment##"
+        },
+        {
+            "name": "String",
+            "scope": "string",
+            "foreground": "@@string##"
+        },
+        {
+            "name": "Regexp",
+            "scope": "string.regexp",
+            "foreground": "@@regex##
+        },
+        {
+            "name": "Escape \\ char",
+            "scope": "constant.character.escape",
+            "foreground": "@@escape_char##"
+        },
+        {
+            "name": "Number",
+            "scope": "constant.numeric",
+            "foreground": "@@number##"
+        },
+        {
+            "name": "Variable",
+            "scope": "variable",
+            "foreground": "@@variable##"
+        },
+        {
+            "name": "Variable Function",
+            "scope": "variable.function",
+            "foreground": "@@variable_function##"
+        },
+        {
+            "name": "Variable Language",
+            "scope": "variable.language",
+            "foreground": "@@variable_language##"
+        },
+        {
+            "name": "Keyword",
+            "scope": "keyword",
+            "foreground": "@@keyword##"
+        },
+        {
+            "name": "Import",
+            "scope": "meta.import keyword, keyword.control.import, keyword.control.import.from, keyword.other.import, keyword.control.at-rule.include, keyword.control.at-rule.import",
+            "foreground": "@@import##"
+        },
+        {
+            "name": "Assignment, Comparision Operators",
+            "scope": "keyword.operator.comparison, keyword.operator.assignment",
+            "foreground": "@@assignment_comparison##"
+        },
+        {
+            "name": "Arithmetical Operators",
+            "scope": "keyword.operator.arithmetic",
+            "foreground": "@@arithmetic_operator##"
+        },
+        {
+            "name": "Storage",
+            "scope": "storage",
+            "foreground": "@@storage##"
+        },
+        {
+            "name": "Storage modifier",
+            "scope": "storage.modifier",
+            "foreground": "@@storage_modifier##"
+        },
+        {
+            "name": "Class",
+            "scope": "keyword.control.class, entity.name, entity.name.class, entity.name.type.class",
+            "foreground": "@@class##"
+        },
+        {
+            "name": "Inherited Class",
+            "scope": "entity.other.inherited-class",
+            "foreground": "@@class_inherited##"
+        },
+        {
+            "name": "Attribute",
+            "scope": "entity.other.attribute-name",
+            "foreground": "@@attribute##"
+        },
+        {
+            "name": "Library class",
+            "scope": "support, support.type, support.class",
+            "foreground": "@@class_library##"
+        },
+        {
+            "name": "Function name",
+            "scope": "entity.name.function",
+            "foreground": "@@function##"
+        },
+        {
+            "name": "Variable start",
+            "scope": "punctuation.definition.variable",
+            "foreground": "@@variable_start##"
+        },
+        {
+            "name": "Built-in constant",
+            "scope": "constant, constant.language, meta.preprocessor",
+            "foreground": "@@constant_builtin##"
+        },
+        {
+            "scope": "entity.name.section",
+            "foreground": "@@entity_name_section##"
+        },
+        {
+            "name": "Support.construct",
+            "scope": "support.function.construct, keyword.other.new",
+            "foreground": "@@construct##"
+        },
+        {
+            "name": "User-defined constant",
+            "scope": "constant.character, constant.other",
+            "foreground": "@@constant_userdef##"
+        },
+        {
+            "name": "Tag name",
+            "scope": "entity.name.tag",
+            "foreground": "@@tagname##"
+        },
+        {
+            "name": "Tag start/end",
+            "scope": "punctuation.definition.tag.html, punctuation.definition.tag.begin, punctuation.definition.tag.end",
+            "foreground": "@@tag_punctuation##"
+        },
+        {
+            "name": "Library function",
+            "scope": "support.function",
+            "foreground": "@@function_library##"
+        },
+        {
+            "name": "Continuation",
+            "scope": "punctuation.separator.continuation",
+            "foreground": "@@continuation##"
+        },
+        {
+            "name": "Storage Type",
+            "scope": "storage.type",
+            "foreground": "@@storage_type##"
+        },
+        {
+            "name": "Exception",
+            "scope": "support.type.exception",
+            "foreground": "@@exception##"
+        },
+        {
+            "name": "Special",
+            "scope": "keyword.other.special-method",
+            "foreground": "@@keyword_special##"
+        },
+        {
+            "name": "Invalid",
+            "scope": "invalid",
+            "background": "@@invalid##"
+        },
+        {
+            "name": "Quoted String",
+            "scope": "string.quoted.double, string.quoted.single",
+            "foreground": "@@string_quoted##"
+        },
+        {
+            "name": "Quotes",
+            "scope": "punctuation.definition.string",
+            "foreground": "@@string_quotes##"
+        },
+        {
+            "name": "[]",
+            "scope": "meta.brace.square, punctuation.section.brackets",
+            "foreground": "@@braces_square##"
+        },
+        {
+            "name": "(),{}",
+            "scope": "meta.brace.round, meta.brace.curly, punctuation.section, punctuation.section.block, punctuation.definition.parameters, punctuation.section.group",
+            "foreground": "@@braces_round##"
+        },
+        {
+            "name": "CSS: Standard color value",
+            "scope": "support.constant.color, invalid.deprecated.color.w3c-non-standard-color-name.scss",
+            "foreground": "@@css_color_value##"
+        },
+        {
+            "name": "CSS: Selector > [] and non-spec tags",
+            "scope": "meta.selector.css",
+            "foreground": "@@css_selector_meta##"
+        },
+        {
+            "name": "CSS: Tag",
+            "scope": "entity.name.tag.css, entity.name.tag.scss, source.less keyword.control.html.elements, source.sass keyword.control.untitled",
+            "foreground": "@@css_tagname##"
+        },
+        {
+            "name": "CSS .class",
+            "scope": "entity.other.attribute-name.class",
+            "foreground": "var(yellow)"
+        },
+        {
+            "name": "CSS: #id",
+            "scope": "entity.other.attribute-name.id",
+            "foreground": "@@css_classname##"
+        },
+        {
+            "name": "CSS :pseudo",
+            "scope": "entity.other.attribute-name.pseudo-element, entity.other.attribute-name.tag.pseudo-element, entity.other.attribute-name.pseudo-class, entity.other.attribute-name.tag.pseudo-class",
+            "foreground": "@@css_pseudo##"
+        },
+        {
+            "name": "CSS: @-rule",
+            "scope": "keyword.control.at-rule",
+            "foreground": "@@css_rule##"
+        },
+        {
+            "name": "Haskell: Variable",
+            "scope": "source.haskell variable",
+            "foreground": "@@haskell_variable##"
+        },
+        {
+            "name": "HTML: =",
+            "scope": "text.html.basic meta.tag.other.html, text.html.basic meta.tag.any.html, text.html.basic meta.tag.block.any, text.html.basic meta.tag.inline.any, text.html.basic meta.tag.structure.any.html, text.html.basic source.js.embedded.html, punctuation.separator.key-value.html",
+            "foreground": "@@html_basic##"
+        },
+        {
+            "name": "HTML: something=",
+            "scope": "text.html.basic entity.other.attribute-name.html, meta.tag.xml entity.other.attribute-name",
+            "foreground": "@@html_attributes##"
+        },
+        {
+            "name": "Ruby: Special Method",
+            "scope": "keyword.other.special-method.ruby",
+            "foreground": "@@ruby_method##"
+        },
+        {
+            "name": "Ruby: Constant Other",
+            "scope": "variable.other.constant.ruby",
+            "foreground": "@@ruby_constant##"
+        },
+        {
+            "name": "Ruby: :symbol",
+            "scope": "constant.other.symbol.ruby",
+            "foreground": "@@ruby_symbol##"
+        },
+        {
+            "name": "PHP: Array()",
+            "scope": "meta.array support.function.construct.php",
+            "foreground": "@@php_array##"
+        },
+        {
+            "name": "C: Preprocessor",
+            "scope": "entity.name.function.preprocessor.c, meta.preprocessor.c.include, meta.preprocessor.macro.c",
+            "foreground": "@@c_preprocessor##"
+        },
+        {
+            "name": "C: include",
+            "scope": "meta.preprocessor.c.include string.quoted.other.lt-gt.include.c, meta.preprocessor.c.include punctuation.definition.string.begin.c, meta.preprocessor.c.include punctuation.definition.string.end.c",
+            "foreground": "@@c_include##"
+        },
+        {
+            "name": "Other: Removal",
+            "scope": "other.package.exclude, other.remove",
+            "foreground": "@@removal##"
+        },
+        {
+            "name": "Other: Add",
+            "scope": "other.add",
+            "foreground": "@@addition##"
+        },
+        {
+            "name": "Tex: {}",
+            "scope": "punctuation.section.group.tex , punctuation.definition.arguments.begin.latex, punctuation.definition.arguments.end.latex, punctuation.definition.arguments.latex",
+            "foreground": "@@latex_braces##"
+        },
+        {
+            "name": "Tex: {text}",
+            "scope": "meta.group.braces.tex",
+            "foreground": "@@latex_tex##"
+        },
+        {
+            "name": "Tex: Other Math",
+            "scope": "string.other.math.tex",
+            "foreground": @@latex_math_other##"
+        },
+        {
+            "name": "Tex: {var}",
+            "scope": "variable.parameter.function.latex",
+            "foreground": "@@latex_variable##"
+        },
+        {
+            "name": "Tex: Math \\\\",
+            "scope": "punctuation.definition.constant.math.tex",
+            "foreground": "@@latex_math##"
+        },
+        {
+            "name": "Tex: Constant Math",
+            "scope": "text.tex.latex constant.other.math.tex, constant.other.general.math.tex, constant.other.general.math.tex, constant.character.math.tex",
+            "foreground": "@@latex_math_constant##"
+        },
+        {
+            "name": "Tex: Other Math String",
+            "scope": "string.other.math.tex",
+            "foreground": "@@latex_math_string##"
+        },
+        {
+            "name": "Tex: $",
+            "scope": "punctuation.definition.string.begin.tex, punctuation.definition.string.end.tex",
+            "foreground": "@@latex_punctuation##"
+        },
+        {
+            "name": "Tex: \\label",
+            "scope": "keyword.control.label.latex, text.tex.latex constant.other.general.math.tex",
+            "foreground": "@@latex_label##"
+        },
+        {
+            "name": "Tex: \\label { }",
+            "scope": "variable.parameter.definition.label.latex",
+            "foreground": "@@latex_label_variable##"
+        },
+        {
+            "name": "Tex: Function",
+            "scope": "support.function.be.latex",
+            "foreground": "@@latex_function##"
+        },
+        {
+            "name": "Tex: Support Function Section",
+            "scope": "support.function.section.latex",
+            "foreground": "@@latex_support_function_section##"
+        },
+        {
+            "name": "Tex: Support Function",
+            "scope": "support.function.general.tex",
+            "foreground": "@@latex_support_function##"
+        },
+        {
+            "name": "Tex: Reference Label",
+            "scope": "keyword.control.ref.latex",
+            "foreground": "@@latex_label_reference##"
+        },
+        {
+            "name": "Python: storage",
+            "scope": "storage.type.class.python, storage.type.function.python, storage.modifier.global.python",
+            "foreground": "@@python_storage##"
+        },
+        {
+            "name": "Python: Support.exception",
+            "scope": "support.type.exception.python",
+            "foreground": "@@python_support_exception##"
+        },
+        {
+            "name": "Shell: meta scope in loop",
+            "scope": "meta.scope.for-in-loop.shell, variable.other.loop.shell",
+            "foreground": "@@shell_loop##"
+        },
+        {
+            "name": "Shell: Meta Block",
+            "scope": "meta.scope.case-block.shell, meta.scope.case-body.shell",
+            "foreground": "@@shell_meta_block##"
+        },
+        {
+            "name": "Shell: []",
+            "scope": "punctuation.definition.logical-expression.shell",
+            "foreground": "@@shell_brackets##"
+        },
+        {
+            "name": "Storage",
+            "scope": "storage.modifier.c++",
+            "foreground": "@@c_storage##"
+        },
+        {
+            "name": "Perl: functions",
+            "scope": "support.function.perl",
+            "foreground": "@@perl_function##"
+        },
+        {
+            "name": "diff: header",
+            "scope": "meta.diff, meta.diff.header",
+            "foreground": "@@diff_header##"
+        },
+        {
+            "name": "diff: range",
+            "scope": "meta.diff.range",
+            "foreground": "@@diff_range##"
+        },
+        {
+            "name": "diff: deleted",
+            "scope": "markup.deleted",
+            "foreground": "@@diff_deleted"
+        },
+        {
+            "name": "diff: changed",
+            "scope": "markup.changed",
+            "foreground": "@@diff_changed##"
+        },
+        {
+            "name": "diff: inserted",
+            "scope": "markup.inserted",
+            "foreground": "var(green)"
+        },
+        {
+            "name": "Warning",
+            "scope": "markup.warning",
+            "foreground": "@@markup_warning##"
+        },
+        {
+            "name": "Error",
+            "scope": "markup.error",
+            "foreground": "@@markup_error##"
+        },
+        {
+            "scope": "markup.heading, punctuation.definition.heading.markdown",
+            "foreground": "@@markup_heading##",
+            "font_style": "bold"
+        },
+        {
+            "name": "Markdown quote",
+            "scope": "markup.quote",
+            "foreground": "@@markup_quote##"
+        },
+        {
+            "name": "Markdown em",
+            "scope": "markup.italic",
+            "font_style": "italic"
+        },
+        {
+            "scope": "markup.bold",
+            "font_style": "bold"
+        },
+        {
+            "scope": "markup.underline.link.markdown, meta.link.reference constant.other.reference.link.markdown",
+            "foreground": "@@markup_link##"
+        },
+        {
+            "scope": "constant.other.reference.link.markdown",
+            "foreground": "@@markup_reference##"
+        },
+        {
+            "scope": "meta.paragraph.markdown meta.dummy.line-break",
+            "background": "@@markup_line_break##"
+        },
+        {
+            "name": "SublimeBracketHighlighter",
+            "scope": "brackethighlighter.all",
+            "foreground": "@@editor_bracket_highlighter##"
+        },
+        {
+            "name": "Find In Files: File Name",
+            "scope": "entity.name.filename.find-in-files",
+            "foreground": "@@editor_filename##"
+        },
+        {
+            "name": "Find In Files: Line numbers",
+            "scope": "constant.numeric.line-number.find-in-files",
+            "foreground": "@@editor_line_numbers##"
+        },
+        {
+            "name": "JavaScript Variables",
+            "scope": "variable.other.readwrite.js, variable.other.object.js, variable.other.constant.js",
+            "foreground": "@@javascript_variable##"
+        }
+    ]
+}
