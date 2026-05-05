@@ -1,8 +1,6 @@
-import * as path from "path";
 import { exec } from "child_process";
 import { logger } from "../utils/logger";
 import { getThemeProjectPaths, manifestExists, readManifest } from "../utils/paths";
-import { validateManifest } from "../core/manifest";
 import { PreviewServer } from "../preview/server";
 
 export async function previewCommand(): Promise<void> {
@@ -17,24 +15,17 @@ export async function previewCommand(): Promise<void> {
       throw new Error("Manifest not found. Run 'themebooth init' first.");
     }
 
-    // Validate manifest
+    // Load manifest (validation happens in server for live error display)
     const manifestData = await readManifest(paths.manifest);
-    const validation = validateManifest(manifestData);
-    if (!validation.success) {
-      logger.error("Manifest validation failed:");
-      validation.errors.forEach((err) => {
-        logger.error(`  • ${err.field}: ${err.message}`);
-      });
-      throw new Error("Invalid manifest");
-    }
-
-    const manifest = validation.data;
+    const themeName = typeof manifestData === "object" && manifestData !== null && "name" in manifestData
+      ? String(manifestData.name)
+      : "Unknown Theme";
 
     // Start server
     const server = new PreviewServer({
       manifestPath: paths.manifest,
       previewPath: paths.preview,
-      themeName: manifest.name,
+      themeName,
     });
 
     await server.start();
