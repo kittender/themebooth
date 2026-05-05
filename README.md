@@ -103,6 +103,64 @@ Each command guides you through marketplace login and submission.
    - Zed → `.json` theme file
 3. Publish directly from CLI using your marketplace credentials
 
+## Documentation
+
+- **[Manifest Schema](MANIFEST_SCHEMA.md)** — Complete reference for `manifest.json`
+- **[CLI Commands](CLI_HELP.md)** — Detailed help for each command
+- **[Troubleshooting](TROUBLESHOOTING.md)** — Solutions for common issues
+- **[Contributing](CONTRIBUTING.md)** — How to contribute to Theme Booth
+
+## Examples
+
+### Create a theme from preset
+```bash
+themebooth init ocean-dream --preset dark
+cd ocean-dream
+themebooth preview
+```
+
+### Use custom colors
+Edit `manifest.json`:
+```json
+{
+  "name": "My Theme",
+  "author": "Your Name",
+  "description": "Custom syntax theme",
+  "version": "1.0.0",
+  "variables": {
+    "bg": "#0d1117",
+    "fg": "#c9d1d9",
+    "keyword": "#ff6b6b"
+  },
+  "colors": {
+    "editor.background": "$bg",
+    "editor.foreground": "$fg"
+  },
+  "tokens": {
+    "keyword": { "foreground": "$keyword", "fontStyle": "bold" }
+  },
+  "presets": []
+}
+```
+
+Then preview:
+```bash
+themebooth preview
+```
+
+Changes to `manifest.json` reload automatically.
+
+## CLI Commands
+
+| Command | Purpose |
+|---------|---------|
+| `themebooth init [name]` | Create new theme project |
+| `themebooth preview` | Live preview with hot-reload |
+| `themebooth package` | Package for all platforms |
+| `themebooth publish <platform>` | Publish to marketplace |
+
+See `themebooth --help` or `themebooth <command> --help` for detailed options.
+
 ## Next: Future versions
 
 **v2** adds Sublime Text, IntelliJ IDEA, and PyCharm with multi-file support and language-specific overrides.

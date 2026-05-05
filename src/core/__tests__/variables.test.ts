@@ -35,15 +35,12 @@ describe("Variable Resolution", () => {
   });
 
   it("should detect circular references", () => {
-    const manifest: Manifest = {
-      name: "Test",
-      author: "Test",
-      version: "1.0.0",
+    const manifest = createManifest({
       variables: {
         a: "$b",
         b: "$a",
       },
-    };
+    });
 
     const result = resolveVariables(manifest);
     expect(result.success).toBe(false);
@@ -54,16 +51,13 @@ describe("Variable Resolution", () => {
   });
 
   it("should detect three-way circular references", () => {
-    const manifest: Manifest = {
-      name: "Test",
-      author: "Test",
-      version: "1.0.0",
+    const manifest = createManifest({
       variables: {
         a: "$b",
         b: "$c",
         c: "$a",
       },
-    };
+    });
 
     const result = resolveVariables(manifest);
     expect(result.success).toBe(false);
@@ -73,15 +67,12 @@ describe("Variable Resolution", () => {
   });
 
   it("should resolve transitive variable references", () => {
-    const manifest: Manifest = {
-      name: "Test",
-      author: "Test",
-      version: "1.0.0",
+    const manifest = createManifest({
       variables: {
         base: "#ff0000",
         derived: "$base",
       },
-    };
+    });
 
     const result = resolveVariables(manifest);
     expect(result.success).toBe(true);
@@ -91,10 +82,7 @@ describe("Variable Resolution", () => {
   });
 
   it("should interpolate variables in colors", () => {
-    const manifest: Manifest = {
-      name: "Test",
-      author: "Test",
-      version: "1.0.0",
+    const manifest = createManifest({
       variables: {
         bg: "#0d1117",
         fg: "#c9d1d9",
@@ -103,7 +91,7 @@ describe("Variable Resolution", () => {
         "editor.background": "$bg",
         "editor.foreground": "$fg",
       },
-    };
+    });
 
     const resResult = resolveVariables(manifest);
     expect(resResult.success).toBe(true);
@@ -115,10 +103,7 @@ describe("Variable Resolution", () => {
   });
 
   it("should interpolate variables in tokens", () => {
-    const manifest: Manifest = {
-      name: "Test",
-      author: "Test",
-      version: "1.0.0",
+    const manifest = createManifest({
       variables: {
         keyword: "#ff7b72",
       },
@@ -127,7 +112,7 @@ describe("Variable Resolution", () => {
           foreground: "$keyword",
         },
       },
-    };
+    });
 
     const resResult = resolveVariables(manifest);
     expect(resResult.success).toBe(true);
@@ -138,14 +123,11 @@ describe("Variable Resolution", () => {
   });
 
   it("should validate references to undefined variables", () => {
-    const manifest: Manifest = {
-      name: "Test",
-      author: "Test",
-      version: "1.0.0",
+    const manifest = createManifest({
       colors: {
         "editor.background": "$undefined",
       },
-    };
+    });
 
     const errors = validateVariableReferences(manifest);
     expect(errors.length).toBeGreaterThan(0);
@@ -153,15 +135,12 @@ describe("Variable Resolution", () => {
   });
 
   it("should find all undefined variable references", () => {
-    const manifest: Manifest = {
-      name: "Test",
-      author: "Test",
-      version: "1.0.0",
+    const manifest = createManifest({
       colors: {
         "color1": "$undefined1",
         "color2": "$undefined2",
       },
-    };
+    });
 
     const errors = validateVariableReferences(manifest);
     expect(errors.length).toBe(2);

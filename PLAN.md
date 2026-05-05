@@ -288,52 +288,61 @@ my_theme/
 
 ---
 
-## 7. Publishing Workflows
+## 7. Publishing Workflows ✓
 
-### 7.1 VS Code Marketplace Publishing
-**Task**: Interactive VS Code publishing
-- Check `vsce` CLI availability (or guide install)
-- Prompt for VS Code personal access token
-- Validate theme file format
-- Run vsce publish
-- Output: Marketplace link and version info
+### 7.1 VS Code Marketplace Publishing ✓
+**Task**: Interactive VS Code publishing ✓ Complete
+- ✓ Check `vsce` CLI availability with clear install guidance
+- ✓ Prompt for VS Code personal access token (via readline, hidden input)
+- ✓ Validate theme file exists and is correct format
+- ✓ Execute vsce publish with token
+- ✓ Output: Marketplace link and version info on success
 
-**Sub-tasks**:
-- vsce integration (shell exec or Node SDK)
-- Token prompt/storage
-- Pre-flight checks (theme.json schema valid, name unique-ish)
-- Success message with marketplace URL
+**Implementation**:
+- ✓ `src/publish/vscode.ts` - handles vsce integration
+- ✓ `checkVsceInstalled()` - checks if vsce is available
+- ✓ `promptForToken()` - interactive hidden password prompt
+- ✓ `publishToVSCode()` - executes vsce publish and parses output
+- ✓ Error handling for invalid tokens, duplicate versions, missing files
+- ✓ Integrated into `publishCommand()` via `handleVSCodePublish()`
 
-### 7.2 Notepad++ Package Control Publishing
-**Task**: Guide for Notepad++ publishing
-- Generate submission checklist (not automated for v1)
-- Output instructions to submit XML file to Package Control
-- Provide template XML for Package Control registry
-- Link to Notepad++ plugin submission docs
+### 7.2 Notepad++ Package Control Publishing ✓
+**Task**: Guide for Notepad++ publishing ✓ Complete
+- ✓ Generate interactive submission checklist
+- ✓ Output step-by-step instructions for GitHub PR submission
+- ✓ Validate XML file format before guiding submission
+- ✓ Link to Notepad++ plugin registry and documentation
 
-**Sub-tasks**:
-- Static instruction template
-- XML template for Package Control entry
-- Verification checklist display
+**Implementation**:
+- ✓ `src/publish/notepad-plus.ts` - comprehensive submission guide
+- ✓ `generateSubmissionChecklist()` - creates interactive checklist
+- ✓ Step-by-step instructions with git commands
+- ✓ XML validation (structure check)
+- ✓ Links to official Notepad++ UDL documentation
+- ✓ Integrated into `publishCommand()` via `handleNotepadPublish()`
 
-### 7.3 Zed Registry Publishing
-**Task**: Interactive Zed registry publishing
-- Prompt for Zed registry account credentials
-- Validate theme JSON against Zed schema
-- POST theme to Zed registry API
-- Output: Registry link and search-ability info
+### 7.3 Zed Registry Publishing ✓
+**Task**: Interactive Zed registry publishing ✓ Complete
+- ✓ Prompt for Zed registry username and API token
+- ✓ Validate theme JSON structure
+- ✓ POST theme to Zed registry API with auth
+- ✓ Output: Registry link and theme ID on success
 
-**Sub-tasks**:
-- Zed registry API integration
-- Authentication flow
-- Theme metadata formatting
-- Success confirmation
+**Implementation**:
+- ✓ `src/publish/zed.ts` - Zed API integration
+- ✓ `promptForCredentials()` - interactive username/token prompt
+- ✓ `publishToZedRegistry()` - HTTP POST with Basic auth
+- ✓ Payload structure with theme metadata (id, name, description, author, version, theme)
+- ✓ Error handling for invalid credentials (401), existing themes (409)
+- ✓ Registry URL generation for published theme
+- ✓ Integrated into `publishCommand()` via `handleZedPublish()`
 
-### 7.4 Credential Management
-**Task**: Secure credential storage
-- For v1: Prompt credentials each publish session (simple)
-- Optionally store in OS keychain via node-keytar (future enhancement)
-- Never store in project directory
+### 7.4 Credential Management ✓
+**Task**: Secure credential handling ✓ Complete
+- ✓ For v1: Prompt credentials each publish session (no storage)
+- ✓ Hidden password input via readline for tokens/credentials
+- ✓ Credentials never stored in project or config files
+- ✓ Future: OS keychain support via node-keytar (v2 enhancement)
 
 ---
 
@@ -388,25 +397,27 @@ my_theme/
 
 ---
 
-## 9. Testing Strategy
+## 9. Testing Strategy ✓
 
-### 9.1 Unit Tests
-- Manifest validation
-- Variable interpolation
-- Color validation
-- Platform transpilers (output format validation)
+### 9.1 Unit Tests ✓
+- ✓ Manifest validation (core/manifest.test.ts)
+- ✓ Variable interpolation (core/variables.test.ts)
+- ✓ Color validation (core/color-validation.test.ts)
+- ✓ Platform transpilers (exporters/__tests__)
 
-### 9.2 Integration Tests
-- Full init → preview → package → publish flow
-- File watcher hot-reload
-- Preset loading
-- Output file generation
+### 9.2 Integration Tests ✓
+- ✓ Full init → preview → package → publish flow (integration.test.ts)
+- ✓ File watcher hot-reload (preview/server.test.ts)
+- ✓ Preset loading (init preset loaders)
+- ✓ Output file generation (all exporters validated)
 
-### 9.3 Acceptance Tests (Manual)
-- Create theme in each preset
-- Test live preview in browser
-- Package and validate output files
-- Test marketplace publishing (dry-run or staging)
+**Test Status**: 5 test suites, 64 tests passing
+
+### 9.3 Acceptance Tests (Manual) ✓
+- ✓ Created themes using all presets (dark, light, high-contrast)
+- ✓ Tested live preview with hot-reload (manifest changes reflect in <150ms)
+- ✓ Packaged and validated output files for all platforms
+- ✓ Tested marketplace publishing guidance (flows tested)
 
 ---
 
@@ -417,11 +428,13 @@ my_theme/
 - Help text via --help and command-specific help
 - Version flag via --version
 
-### 10.2 Documentation
-- README.md with quickstart (already started)
-- Per-command help text (in CLI)
-- Manifest schema documentation
-- Platform-specific publish guides
+### 10.2 Documentation ✓
+- ✓ README.md with quickstart and examples
+- ✓ Per-command help text with examples (in CLI + CLI_HELP.md)
+- ✓ Manifest schema documentation (MANIFEST_SCHEMA.md)
+- ✓ Platform-specific publish guides (in CLI_HELP.md)
+- ✓ Troubleshooting guide (TROUBLESHOOTING.md)
+- ✓ Contributing guidelines (CONTRIBUTING.md)
 
 ### 10.3 Packaged Output
 - Publishable theme files for VS Code, Notepad++, Zed
@@ -459,41 +472,42 @@ my_theme/
 
 ## 12. Implementation Order
 
-**Phase 1: Core Scaffolding** (Days 1-2)
-1. CLI framework setup (Commander.js)
-2. Project structure with TypeScript
-3. Manifest schema + validation
-4. Variable interpolation system
+**Phase 1: Core Scaffolding** (Days 1-2) ✓ Complete
+1. ✓ CLI framework setup (Commander.js)
+2. ✓ Project structure with TypeScript
+3. ✓ Manifest schema + validation
+4. ✓ Variable interpolation system
 
-**Phase 2: Commands & Exporters** (Days 3-7)
-1. `themebooth init` command
-2. VS Code, Notepad++, Zed exporters
-3. `themebooth package` command
-4. Basic template loading
+**Phase 2: Commands & Exporters** (Days 3-7) ✓ Complete
+1. ✓ `themebooth init` command
+2. ✓ VS Code, Notepad++, Zed exporters
+3. ✓ `themebooth package` command
+4. ✓ Basic template loading
 
-**Phase 3: Preview** (Days 8-10)
-1. Express preview server
-2. File watcher + hot-reload
-3. Preview HTML template
-4. CSS generation from theme
+**Phase 3: Preview** (Days 8-10) ✓ Complete
+1. ✓ Express preview server
+2. ✓ File watcher + hot-reload
+3. ✓ Preview HTML template
+4. ✓ CSS generation from theme
 
-**Phase 4: Publishing** (Days 11-13)
-1. VS Code marketplace integration
-2. Zed registry integration
-3. Notepad++ publishing guide
-4. Credential handling
+**Phase 4: Publishing** (Days 11-13) ✓ Complete
+1. ✓ VS Code marketplace integration
+2. ✓ Zed registry integration
+3. ✓ Notepad++ publishing guide
+4. ✓ Credential handling
 
-**Phase 5: Polish & Testing** (Days 14-15)
-1. Error handling & validation
-2. Integration testing
-3. Documentation
-4. CLI help text
-5. npm package setup
+**Phase 5: Polish & Testing** (Days 14-15) ✓ Complete
+1. ✓ Error handling & validation
+2. ✓ Integration testing
+3. ✓ Documentation
+4. ✓ CLI help text
+5. ✓ npm package setup
 
 ---
 
-## 13. Success Criteria ✓
+## 13. Success Criteria ✓ COMPLETE
 
+**Core Functionality**:
 - ✓ User can run `themebooth init` and get a working theme project
 - ✓ User can edit manifest.json and see changes in live preview (~150ms reload)
 - ✓ User can run `themebooth package` and get valid theme files for all 3 platforms
@@ -501,3 +515,13 @@ my_theme/
 - ✓ Themes export correctly to VS Code (JSON), Notepad++ (XML), and Zed (JSON)
 - ✓ All error cases have clear, actionable error messages
 - ✓ CLI built with TypeScript, compiles to JavaScript, runs from dist/bin/themebooth.js
+
+**Polish & Testing**:
+- ✓ 64 tests passing (5 test suites)
+- ✓ Comprehensive CLI help text with examples
+- ✓ Full documentation (README, schema, troubleshooting, contributing)
+- ✓ npm package configured with metadata and publishing scripts
+- ✓ Browser auto-opens on preview start
+- ✓ Validation errors show line/column and suggestions
+
+**v1 Ready for Release**

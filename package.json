@@ -6,10 +6,20 @@
   "bin": {
     "themebooth": "dist/bin/themebooth.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kittender/themebooth.git"
+  },
+  "homepage": "https://github.com/kittender/themebooth",
+  "bugs": {
+    "url": "https://github.com/kittender/themebooth/issues"
+  },
   "scripts": {
     "build": "tsc && mkdir -p dist/templates/presets && cp -r src/templates/presets/*.json dist/templates/presets/",
     "test": "node test.js",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build && npm run test",
+    "postinstall": "node -e \"console.log('\\n✅ themebooth installed! Run: themebooth init my-theme\\n')\""
   },
   "keywords": [
     "syntax",
@@ -39,6 +49,7 @@
     "@types/node": "^20.10.6",
     "@types/ws": "^8.18.1",
     "jest": "^30.3.0",
+    "ts-jest": "^29.4.9",
     "typescript": "^5.3.3"
   }
 }
