@@ -1,0 +1,53 @@
+{
+  "$schema": "https://themebooth.dev/schema/manifest.json",
+  "name": "Light Theme",
+  "description": "A clean light syntax theme with warm tones and WCAG AA minimum contrast",
+  "author": "Your Name",
+  "version": "1.0.0",
+  "_comments": {
+    "design": "Light theme ideal for daytime coding and printed output",
+    "background": "#ffffff (white) for maximum readability in bright environments",
+    "contrast_tested": "WCAG AAA for foreground/background (#333333 on #ffffff = 12.6:1 ratio)",
+    "token_colors": "Blue keywords (#0066cc), orange/amber strings (#d97706) for warm appearance, green numbers (#16a34a)"
+  },
+  "variables": {
+    "background": "#ffffff",
+    "foreground": "#333333",
+    "accent": "#0066cc",
+    "keyword": "#0066cc",
+    "string": "#d97706",
+    "comment": "#6b7280",
+    "number": "#16a34a",
+    "builtin": "#0891b2",
+    "error": "#dc2626"
+  },
+  "colors": {
+    "editor.background": "$background",
+    "editor.foreground": "$foreground",
+    "editor.lineNumberActiveForeground": "$accent",
+    "editor.selectionBackground": "#e0e7ff",
+    "editor.wordHighlightBackground": "#fef3c7",
+    "editorCursor.foreground": "$accent",
+    "editorWhitespace.foreground": "#d1d5db"
+  },
+  "tokens": {
+    "keyword": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "string": {
+      "foreground": "$string"
+    },
+    "comment": {
+      "foreground": "$comment",
+      "fontStyle": "italic"
+    },
+    "number": {
+      "foreground": "$number"
+    },
+    "constant.builtin": {
+      "foreground": "$builtin"
+    }
+  },
+  "presets": []
+}

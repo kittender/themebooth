@@ -25,146 +25,74 @@ node_modules/
 Thumbs.db
 `;
 
-const PRESET_MANIFESTS: Record<string, Manifest> = {
-  dark: {
-    name: "Dark Theme",
-    description: "A beautiful dark syntax theme",
-    author: "Your Name",
-    version: "1.0.0",
-    variables: {
-      background: "#1e1e1e",
-      foreground: "#d4d4d4",
-      accent: "#007acc",
-      keyword: "#569cd6",
-      string: "#ce9178",
-      comment: "#6a9955",
-      number: "#b5cea8",
-      builtin: "#4ec9b0",
-      error: "#f48771",
-    },
-    colors: {
-      "editor.background": "$background",
-      "editor.foreground": "$foreground",
-      "editor.lineNumberActiveForeground": "$accent",
-      "editor.selectionBackground": "#264f78",
-      "editor.wordHighlightBackground": "#575757",
-      "editorCursor.foreground": "$accent",
-      "editorWhitespace.foreground": "#464646",
-    },
-    tokens: {
-      keyword: {
-        foreground: "$keyword",
-        fontStyle: "bold",
-      },
-      string: {
-        foreground: "$string",
-      },
-      comment: {
-        foreground: "$comment",
-        fontStyle: "italic",
-      },
-      number: {
-        foreground: "$number",
-      },
-      "constant.builtin": {
-        foreground: "$builtin",
-      },
-    },
-    presets: [],
+const CUSTOM_MANIFEST: Manifest = {
+  name: "My Custom Theme",
+  description: "A beautiful custom syntax theme",
+  author: "Your Name",
+  version: "1.0.0",
+  variables: {
+    background: "#1e1e1e",
+    foreground: "#d4d4d4",
+    accent: "#007acc",
+    keyword: "#569cd6",
+    string: "#ce9178",
+    comment: "#6a9955",
+    number: "#b5cea8",
+    builtin: "#4ec9b0",
+    error: "#f48771",
   },
-  light: {
-    name: "Light Theme",
-    description: "A clean light syntax theme with warm tones",
-    author: "Your Name",
-    version: "1.0.0",
-    variables: {
-      background: "#ffffff",
-      foreground: "#333333",
-      accent: "#0066cc",
-      keyword: "#0066cc",
-      string: "#d97706",
-      comment: "#6b7280",
-      number: "#16a34a",
-      builtin: "#0891b2",
-      error: "#dc2626",
-    },
-    colors: {
-      "editor.background": "$background",
-      "editor.foreground": "$foreground",
-      "editor.lineNumberActiveForeground": "$accent",
-      "editor.selectionBackground": "#e0e7ff",
-      "editor.wordHighlightBackground": "#fef3c7",
-      "editorCursor.foreground": "$accent",
-      "editorWhitespace.foreground": "#d1d5db",
-    },
-    tokens: {
-      keyword: {
-        foreground: "$keyword",
-        fontStyle: "bold",
-      },
-      string: {
-        foreground: "$string",
-      },
-      comment: {
-        foreground: "$comment",
-        fontStyle: "italic",
-      },
-      number: {
-        foreground: "$number",
-      },
-      "constant.builtin": {
-        foreground: "$builtin",
-      },
-    },
-    presets: [],
+  colors: {
+    "editor.background": "$background",
+    "editor.foreground": "$foreground",
+    "editor.lineNumberActiveForeground": "$accent",
+    "editor.selectionBackground": "#264f78",
+    "editor.wordHighlightBackground": "#575757",
+    "editorCursor.foreground": "$accent",
+    "editorWhitespace.foreground": "#464646",
   },
-  "high-contrast": {
-    name: "High Contrast Theme",
-    description: "Accessibility-focused theme with maximum contrast",
-    author: "Your Name",
-    version: "1.0.0",
-    variables: {
-      background: "#000000",
-      foreground: "#ffffff",
-      accent: "#ffff00",
-      keyword: "#00ffff",
-      string: "#00ff00",
-      comment: "#cccccc",
-      number: "#ff00ff",
-      builtin: "#ffff00",
-      error: "#ff0000",
+  tokens: {
+    keyword: {
+      foreground: "$keyword",
+      fontStyle: "bold",
     },
-    colors: {
-      "editor.background": "$background",
-      "editor.foreground": "$foreground",
-      "editor.lineNumberActiveForeground": "$accent",
-      "editor.selectionBackground": "#0066cc",
-      "editor.wordHighlightBackground": "#663300",
-      "editorCursor.foreground": "$accent",
-      "editorWhitespace.foreground": "#666666",
+    string: {
+      foreground: "$string",
     },
-    tokens: {
-      keyword: {
-        foreground: "$keyword",
-        fontStyle: "bold",
-      },
-      string: {
-        foreground: "$string",
-      },
-      comment: {
-        foreground: "$comment",
-        fontStyle: "italic",
-      },
-      number: {
-        foreground: "$number",
-      },
-      "constant.builtin": {
-        foreground: "$builtin",
-      },
+    comment: {
+      foreground: "$comment",
+      fontStyle: "italic",
     },
-    presets: [],
+    number: {
+      foreground: "$number",
+    },
+    "constant.builtin": {
+      foreground: "$builtin",
+    },
   },
+  presets: [],
 };
+
+async function loadPresetsFromFiles(): Promise<Record<string, Manifest>> {
+  const presetsDir = path.join(__dirname, "../templates/presets");
+  const presets: Record<string, Manifest> = {};
+
+  try {
+    const files = await fs.readdir(presetsDir);
+    for (const file of files) {
+      if (file.endsWith(".json")) {
+        const presetName = file.replace(".json", "");
+        const filePath = path.join(presetsDir, file);
+        const content = await fs.readFile(filePath, "utf-8");
+        presets[presetName] = JSON.parse(content) as Manifest;
+      }
+    }
+  } catch (error) {
+    // Fall back to hardcoded custom if files not found
+    logger.warn("Could not load preset files, using fallback templates");
+  }
+
+  return presets;
+}
 
 function generatePreviewHtml(themeName: string): string {
   return `<!DOCTYPE html>
@@ -395,11 +323,25 @@ export async function initCommand(themeName?: string, presetName?: string): Prom
     // Ensure structure exists
     await ensureThemeProjectStructure(paths);
 
-    // Write manifest
-    const selectedPreset = presetName && presetName in PRESET_MANIFESTS
-      ? presetName as keyof typeof PRESET_MANIFESTS
-      : "dark";
-    const manifest = { ...PRESET_MANIFESTS[selectedPreset], name: finalThemeName };
+    // Load presets from files
+    const presetManifests = await loadPresetsFromFiles();
+
+    // Determine which preset to use
+    let selectedPreset = CUSTOM_MANIFEST;
+    if (presetName) {
+      if (presetName in presetManifests) {
+        selectedPreset = presetManifests[presetName];
+      } else {
+        logger.warn(`Preset "${presetName}" not found, using default dark preset`);
+        selectedPreset = presetManifests["dark"] || CUSTOM_MANIFEST;
+      }
+    } else if (Object.keys(presetManifests).length > 0) {
+      // Use first available preset (dark) as default
+      selectedPreset = presetManifests["dark"] || Object.values(presetManifests)[0] || CUSTOM_MANIFEST;
+    }
+
+    // Create manifest with user's theme name
+    const manifest = { ...selectedPreset, name: finalThemeName };
     await writeManifest(paths.manifest, manifest as unknown as Record<string, unknown>);
 
     // Write .gitignore

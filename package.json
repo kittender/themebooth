@@ -7,7 +7,7 @@
     "themebooth": "dist/bin/themebooth.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && mkdir -p dist/templates/presets && cp -r src/templates/presets/*.json dist/templates/presets/",
     "test": "node test.js",
     "dev": "tsc --watch"
   },
