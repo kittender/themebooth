@@ -109,10 +109,10 @@ my_theme/
 
 ---
 
-## 3. CLI Commands Implementation
+## 3. CLI Commands Implementation ✓
 
 ### 3.1 `themebooth init [name]` ✓
-**Task**: Project initialization ✓ Complete
+**Task**: Project initialization ✓ Complete (Previously implemented)
 - ✓ Accept theme name via args or use current dir name
 - ✓ Support preset selection via --preset flag (dark/light/high-contrast)
 - ✓ Create project directory with:
