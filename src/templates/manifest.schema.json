@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://themebooth.dev/schema/manifest.json",
+  "title": "Theme Booth Manifest Schema",
+  "description": "Schema for Theme Booth theme manifest files",
+  "type": "object",
+  "required": ["name", "author", "version"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name of the theme"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the theme"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Author of the theme"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+",
+      "description": "Semantic version (e.g., 1.0.0)"
+    },
+    "variables": {
+      "type": "object",
+      "description": "Color variables that can be referenced in colors and tokens",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+        "description": "Hex color value (#RRGGBB or #RGB)"
+      }
+    },
+    "colors": {
+      "type": "object",
+      "description": "Editor base colors (background, foreground, etc.)",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+          },
+          {
+            "type": "string",
+            "pattern": "^\\$\\w+$",
+            "description": "Reference to a variable (e.g., $primaryBackground)"
+          }
+        ]
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "description": "Syntax token rules for different code elements",
+      "additionalProperties": {
+        "type": "object",
+        "description": "Token scope (e.g., 'keyword', 'string', 'comment')",
+        "properties": {
+          "foreground": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+              },
+              {
+                "type": "string",
+                "pattern": "^\\$\\w+$"
+              }
+            ],
+            "description": "Text color"
+          },
+          "background": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+              },
+              {
+                "type": "string",
+                "pattern": "^\\$\\w+$"
+              }
+            ],
+            "description": "Background color"
+          },
+          "fontStyle": {
+            "type": "string",
+            "enum": ["normal", "italic", "oblique"],
+            "description": "Font style"
+          },
+          "fontWeight": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": ["normal", "bold", "lighter", "bolder"]
+              },
+              {
+                "type": "integer",
+                "minimum": 100,
+                "maximum": 900,
+                "multipleOf": 100
+              }
+            ],
+            "description": "Font weight"
+          },
+          "opacity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Opacity value (0-1)"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "presets": {
+      "type": "array",
+      "description": "Built-in presets to extend from",
+      "items": {
+        "type": "string",
+        "enum": ["dark", "light", "high-contrast"]
+      }
+    }
+  },
+  "additionalProperties": false
+}

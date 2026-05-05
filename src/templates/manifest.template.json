@@ -1,0 +1,47 @@
+{
+  "$schema": "https://themebooth.dev/schema/manifest.json",
+  "name": "My Custom Theme",
+  "description": "A beautiful custom syntax theme",
+  "author": "Your Name",
+  "version": "1.0.0",
+  "variables": {
+    "background": "#1e1e1e",
+    "foreground": "#d4d4d4",
+    "accent": "#007acc",
+    "keyword": "#569cd6",
+    "string": "#ce9178",
+    "comment": "#6a9955",
+    "number": "#b5cea8",
+    "builtin": "#4ec9b0",
+    "error": "#f48771"
+  },
+  "colors": {
+    "editor.background": "$background",
+    "editor.foreground": "$foreground",
+    "editor.lineNumberActiveForeground": "$accent",
+    "editor.selectionBackground": "#264f78",
+    "editor.wordHighlightBackground": "#575757",
+    "editorCursor.foreground": "$accent",
+    "editorWhitespace.foreground": "#464646"
+  },
+  "tokens": {
+    "keyword": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "string": {
+      "foreground": "$string"
+    },
+    "comment": {
+      "foreground": "$comment",
+      "fontStyle": "italic"
+    },
+    "number": {
+      "foreground": "$number"
+    },
+    "constant.builtin": {
+      "foreground": "$builtin"
+    }
+  },
+  "presets": []
+}

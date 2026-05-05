@@ -1,10 +1,15 @@
 {
   "name": "themebooth",
-  "version": "0.0.0",
-  "description": "Theme Booth allows you to create syntax highlighting for many platforms",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "Create syntax themes once, publish to VS Code, Notepad++, and Zed",
+  "main": "dist/index.js",
+  "bin": {
+    "themebooth": "dist/bin/themebooth.js"
+  },
   "scripts": {
-    "test": "node test.js"
+    "build": "tsc",
+    "test": "node test.js",
+    "dev": "tsc --watch"
   },
   "keywords": [
     "syntax",
@@ -20,8 +25,19 @@
   "author": "Kittender",
   "license": "MIT",
   "dependencies": {
-    "gulp": "^4.0.2",
-    "gulp-replace-name": "^1.0.1",
-    "through2": "^3.0.1"
+    "chokidar": "^3.5.3",
+    "color": "^4.2.3",
+    "commander": "^11.1.0",
+    "express": "^4.18.2",
+    "ws": "^8.14.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/color": "^3.0.6",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.10.6",
+    "jest": "^30.3.0",
+    "typescript": "^5.3.3"
   }
 }
