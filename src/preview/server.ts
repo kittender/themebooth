@@ -122,12 +122,24 @@ export class PreviewServer {
 
   async start(): Promise<number> {
     return new Promise((resolve, reject) => {
+      const maxAttempts = 10;
+      let attempts = 0;
+
       const tryPort = (port: number): void => {
+        if (attempts >= maxAttempts) {
+          reject(new Error(`Could not find available port after ${maxAttempts} attempts (tried ports ${this.currentPort}-${port - 1})`));
+          return;
+        }
+
+        attempts++;
         this.server = this.app.listen(port, () => {
           this.currentPort = port;
           this.setupWebSocket();
           this.watcher.watch(this.options.manifestPath);
 
+          if (port !== this.options.port) {
+            logger.info(`Port ${this.options.port || 5173} in use, using port ${port} instead`);
+          }
           logger.success(`Preview server running at http://localhost:${port}`);
           logger.info(`Watching for changes in: ${this.options.manifestPath}`);
           resolve(port);

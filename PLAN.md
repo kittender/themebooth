@@ -337,46 +337,54 @@ my_theme/
 
 ---
 
-## 8. Error Handling & Validation
+## 8. Error Handling & Validation ✓
 
-### 8.1 Manifest Validation
-**Task**: Comprehensive validation system
-- JSON parse errors with line/col hints
-- Missing required fields (name, author)
-- Invalid color hex format
-- Undefined variable references
-- Circular variable dependencies
-- Invalid token property names
-- Output: Detailed error messages with fixes
+### 8.1 Manifest Validation ✓
+**Task**: Comprehensive validation system ✓ Complete
+- ✓ JSON parse errors with line/col hints
+- ✓ Missing required fields (name, author)
+- ✓ Invalid color hex format
+- ✓ Undefined variable references (checked in colors and tokens)
+- ✓ Circular variable dependencies (detected during resolution)
+- ✓ Invalid token property names
+- ✓ Output: Detailed error messages with contextual suggestions
 
-**Sub-tasks**:
-- Validation schema (zod or joi)
-- Custom error formatting
-- Suggestions for common mistakes
+**Implementation**:
+- ✓ Zod schema validation with superRefine for complex rules
+- ✓ Custom parseManifestJSON with line/column extraction from SyntaxError
+- ✓ validateManifestComprehensive function checks all aspects
+- ✓ Contextual suggestions for each error type
+- ✓ Variable reference validation integrated into comprehensive validation
+- ✓ Unused variable warnings
 
-### 8.2 Export Validation
-**Task**: Validate generated theme files
-- VS Code: JSON schema validation
-- Notepad++: XML well-formedness check
-- Zed: JSON schema validation
-- Report platform-specific errors
+### 8.2 Export Validation ✓
+**Task**: Validate generated theme files ✓ Complete
+- ✓ VS Code: JSON schema structure validation
+- ✓ Notepad++: XML well-formedness check (bracket matching)
+- ✓ Zed: JSON schema structure validation
+- ✓ Report platform-specific errors in package output
 
-**Sub-tasks**:
-- Schema validators per platform
-- Test against real editor validators (optional)
+**Implementation**:
+- ✓ validateExportedTheme function for VS Code and Zed
+- ✓ validateNotepadPlusPlusXML function for Notepad++ XML
+- ✓ Integration into package command with per-platform reporting
+- ✓ Validation errors shown alongside successful exports
 
-### 8.3 Graceful Failures
-**Task**: Handle common error scenarios
-- Directory already exists on init
-- Port already in use on preview start
-- Missing theme manifest on package/publish
-- Invalid platform name on publish
-- Network errors during publish
+### 8.3 Graceful Failures ✓
+**Task**: Handle common error scenarios ✓ Complete
+- ✓ Directory already exists on init (check + user-friendly guidance)
+- ✓ Port already in use on preview start (fallback with max attempts)
+- ✓ Missing theme manifest on package/publish (clear error + next steps)
+- ✓ Invalid platform name on publish (list available options)
+- ✓ Network errors during publish (guidance provided, ready for future integration)
 
-**Sub-tasks**:
-- Error type detection
-- User-friendly error messages
-- Suggested fixes or next steps
+**Implementation**:
+- ✓ Init command checks directory existence and provides options
+- ✓ Preview server port fallback logic with 10-attempt limit
+- ✓ All commands validate manifest existence first
+- ✓ Publish command lists available platforms on error
+- ✓ Comprehensive validation provides step-by-step guidance
+- ✓ Error messages include suggestions for fixes
 
 ---
 

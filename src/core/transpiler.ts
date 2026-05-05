@@ -1,7 +1,7 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 import { Manifest, validateManifest } from "./manifest";
-import { resolveVariables, interpolateManifest } from "./variables";
+import { resolveVariables, interpolateManifest, validateVariableReferences } from "./variables";
 import { exportVSCode } from "../exporters/vscode";
 import { exportNotepadPlus } from "../exporters/notepad-plus";
 import { exportZed } from "../exporters/zed";
@@ -40,6 +40,13 @@ export async function transpileTheme(
   }
 
   const manifest = validation.data;
+
+  // Validate variable references
+  const varRefErrors = validateVariableReferences(manifest);
+  if (varRefErrors.length > 0) {
+    const errors = varRefErrors.map((e) => `${e.location}: ${e.message}`).join("\n");
+    throw new Error(`Variable validation failed:\n${errors}`);
+  }
 
   // Resolve variables
   const variableResolution = resolveVariables(manifest);

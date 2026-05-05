@@ -1,10 +1,15 @@
 import { z } from "zod";
 
 const HexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+const ColorOrVariableRegex = /^(#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})|\$\w+)$/;
 
 const hexColorSchema = z
   .string()
   .regex(HexColorRegex, "Invalid hex color format. Use #RRGGBB or #RGB");
+
+const colorOrVariableSchema = z
+  .string()
+  .regex(ColorOrVariableRegex, "Invalid color format. Use #RRGGBB, #RGB, or $variableName");
 
 const validTokenProperties = ["foreground", "background", "fontStyle", "fontWeight", "opacity"] as const;
 
@@ -25,7 +30,7 @@ export const ManifestSchema = z.object({
   author: z.string().min(1, "Author is required"),
   version: z.string().regex(/^\d+\.\d+\.\d+/, "Version must follow semver (e.g., 1.0.0)"),
 
-  variables: z.record(hexColorSchema).optional().default({}),
+  variables: z.record(colorOrVariableSchema).optional().default({}),
 
   colors: z
     .record(z.string())

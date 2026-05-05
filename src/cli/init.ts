@@ -320,6 +320,27 @@ export async function initCommand(themeName?: string, presetName?: string): Prom
     const themeDir = themeName ? path.join(process.cwd(), themeName) : process.cwd();
     const paths = getThemeProjectPaths(themeDir);
 
+    // Check if directory already exists and is not empty
+    if (themeName) {
+      try {
+        const stat = await fs.stat(themeDir);
+        if (stat.isDirectory()) {
+          const files = await fs.readdir(themeDir);
+          if (files.length > 0) {
+            logger.error(`Directory '${themeName}' already exists and is not empty`);
+            logger.info("Options:");
+            logger.info("  • Use a different theme name");
+            logger.info("  • Use 'themebooth init' without arguments to initialize current directory");
+            throw new Error("Directory already exists");
+          }
+        }
+      } catch (error: any) {
+        if (error?.code !== "ENOENT") {
+          throw error;
+        }
+      }
+    }
+
     // Ensure structure exists
     await ensureThemeProjectStructure(paths);
 

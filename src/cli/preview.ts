@@ -2,6 +2,7 @@ import { exec } from "child_process";
 import { logger } from "../utils/logger";
 import { getThemeProjectPaths, manifestExists, readManifest } from "../utils/paths";
 import { PreviewServer } from "../preview/server";
+import { validateManifestComprehensive } from "../utils/validation";
 
 export async function previewCommand(): Promise<void> {
   try {
@@ -12,14 +13,26 @@ export async function previewCommand(): Promise<void> {
     const exists = await manifestExists(paths.manifest);
     if (!exists) {
       logger.error("No manifest.json found in current directory");
-      throw new Error("Manifest not found. Run 'themebooth init' first.");
+      logger.info("Run 'themebooth init' to create a theme project");
+      throw new Error("Manifest not found");
     }
 
-    // Load manifest (validation happens in server for live error display)
-    const manifestData = await readManifest(paths.manifest);
-    const themeName = typeof manifestData === "object" && manifestData !== null && "name" in manifestData
-      ? String(manifestData.name)
-      : "Unknown Theme";
+    // Validate manifest syntax (live validation of logic happens in server)
+    logger.info("Validating manifest.json...");
+    const validation = await validateManifestComprehensive(paths.manifest);
+    if (!validation.isValid) {
+      logger.error("Manifest has errors:");
+      for (const err of validation.errors) {
+        const locationStr = err.line ? ` (line ${err.line}${err.column ? `, col ${err.column}` : ""})` : "";
+        logger.error(`  • ${err.field}${locationStr}: ${err.message}`);
+        if (err.suggestion) {
+          logger.info(`    → ${err.suggestion}`);
+        }
+      }
+      throw new Error("Invalid manifest");
+    }
+
+    const themeName = validation.manifest?.name || "Unknown Theme";
 
     // Start server
     const server = new PreviewServer({
