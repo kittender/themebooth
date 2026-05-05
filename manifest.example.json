@@ -1,0 +1,682 @@
+{
+  "$schema": "https://themebooth.dev/schema/manifest.json",
+  "name": "Chromatic Depths",
+  "author": "Theme Developer",
+  "description": "Professional syntax theme with excellent contrast and comprehensive language support for JavaScript, CSS, HTML, XML, Java, and Python. Optimized for readability in day and night coding sessions.",
+  "version": "1.0.0",
+  "variables": {
+    "bg": "#0f1419",
+    "bg_secondary": "#1a1f2a",
+    "bg_tertiary": "#252d38",
+    "fg": "#e0e6ed",
+    "fg_dim": "#8b92a0",
+    "fg_muted": "#64707c",
+    "cursor": "#58b6ff",
+    "selection": "#388bfd40",
+    "selection_bg": "#3d444d",
+    "line_highlight": "#161b22",
+    "line_number": "#6e7681",
+    "line_number_active": "#8b949e",
+    "bracket_match": "#3d444d",
+    "whitespace": "#30363d",
+    "keyword": "#ff7b72",
+    "keyword_control": "#ff7b72",
+    "keyword_import": "#ff7b72",
+    "keyword_storage": "#ff7b72",
+    "string": "#a371f7",
+    "string_regex": "#d1bde5",
+    "string_template": "#a371f7",
+    "comment": "#8b949e",
+    "number": "#79c0ff",
+    "number_hex": "#79c0ff",
+    "constant": "#a371f7",
+    "constant_builtin": "#79c0ff",
+    "constant_language": "#79c0ff",
+    "variable": "#c9d1d9",
+    "variable_parameter": "#c9d1d9",
+    "variable_other": "#c9d1d9",
+    "function": "#d2a8ff",
+    "function_call": "#d2a8ff",
+    "function_method": "#d2a8ff",
+    "type": "#f0883e",
+    "type_class": "#f0883e",
+    "type_interface": "#f0883e",
+    "type_enum": "#f0883e",
+    "entity_name_class": "#f0883e",
+    "entity_name_function": "#d2a8ff",
+    "entity_name_tag": "#7ee787",
+    "entity_name_attribute": "#79c0ff",
+    "attribute": "#79c0ff",
+    "attribute_name": "#79c0ff",
+    "attribute_value": "#a371f7",
+    "operator": "#ff9492",
+    "operator_arithmetic": "#ff9492",
+    "operator_logical": "#ff9492",
+    "operator_comparison": "#ff9492",
+    "punctuation": "#c9d1d9",
+    "punctuation_separator": "#c9d1d9",
+    "punctuation_bracket": "#c9d1d9",
+    "tag": "#7ee787",
+    "tag_name": "#7ee787",
+    "tag_open": "#7ee787",
+    "tag_close": "#7ee787",
+    "meta": "#8b949e",
+    "meta_tag": "#8b949e",
+    "meta_annotation": "#d2a8ff",
+    "decorator": "#d2a8ff",
+    "error": "#ff7b72",
+    "warning": "#ffa657",
+    "invalid": "#ff7b72",
+    "diff_add": "#3fb950",
+    "diff_delete": "#ff7b72",
+    "diff_change": "#d2a8ff",
+    "css_property": "#79c0ff",
+    "css_value": "#a371f7",
+    "css_unit": "#ffa657",
+    "css_function": "#d2a8ff",
+    "css_selector": "#7ee787",
+    "css_pseudo": "#7ee787",
+    "html_entity": "#ffa657",
+    "java_annotation": "#d2a8ff",
+    "java_type": "#f0883e",
+    "java_constant": "#79c0ff",
+    "python_builtin": "#79c0ff",
+    "python_decorator": "#d2a8ff",
+    "xml_namespace": "#79c0ff",
+    "markup_bold": "#f0883e",
+    "markup_italic": "#ff7b72",
+    "markup_underline": "#79c0ff",
+    "markup_link": "#58b6ff",
+    "markup_code": "#a371f7"
+  },
+  "colors": {
+    "editor.background": "$bg",
+    "editor.foreground": "$fg",
+    "editor.lineNumberForeground": "$line_number",
+    "editor.lineNumberActiveForeground": "$line_number_active",
+    "editor.lineForeground": "$line_highlight",
+    "editor.selectionBackground": "$selection",
+    "editor.wordHighlightBackground": "$selection_bg",
+    "editorCursor.foreground": "$cursor",
+    "editorCursor.background": "$bg",
+    "editorWhitespace.foreground": "$whitespace",
+    "editorBracketMatch.background": "$bracket_match",
+    "editor.lineHighlightBackground": "$line_highlight",
+    "editor.rangeHighlightBackground": "$bg_tertiary",
+    "editor.findMatchBackground": "$selection_bg",
+    "editor.findMatchHighlightBackground": "$bg_tertiary",
+    "editor.hoverHighlightBackground": "$bg_tertiary",
+    "editor.selectionForeground": "$fg",
+    "editor.wordHighlightForeground": "$fg",
+    "editorBracketMatch.border": "$cursor"
+  },
+  "tokens": {
+    "comment": {
+      "foreground": "$comment",
+      "fontStyle": "italic"
+    },
+    "comment.line": {
+      "foreground": "$comment",
+      "fontStyle": "italic"
+    },
+    "comment.block": {
+      "foreground": "$comment",
+      "fontStyle": "italic"
+    },
+    "comment.block.documentation": {
+      "foreground": "$comment",
+      "fontStyle": "italic"
+    },
+    "string": {
+      "foreground": "$string"
+    },
+    "string.quoted": {
+      "foreground": "$string"
+    },
+    "string.quoted.double": {
+      "foreground": "$string"
+    },
+    "string.quoted.single": {
+      "foreground": "$string"
+    },
+    "string.template": {
+      "foreground": "$string_template"
+    },
+    "string.template.expression": {
+      "foreground": "$variable"
+    },
+    "string.regexp": {
+      "foreground": "$string_regex"
+    },
+    "string.escape": {
+      "foreground": "$warning"
+    },
+    "keyword": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "keyword.control": {
+      "foreground": "$keyword_control",
+      "fontStyle": "bold"
+    },
+    "keyword.operator": {
+      "foreground": "$operator"
+    },
+    "keyword.other": {
+      "foreground": "$keyword"
+    },
+    "keyword.import": {
+      "foreground": "$keyword_import",
+      "fontStyle": "bold"
+    },
+    "keyword.storage": {
+      "foreground": "$keyword_storage",
+      "fontStyle": "bold"
+    },
+    "keyword.storage.type": {
+      "foreground": "$type",
+      "fontStyle": "bold"
+    },
+    "constant": {
+      "foreground": "$constant"
+    },
+    "constant.language": {
+      "foreground": "$constant_language",
+      "fontStyle": "bold"
+    },
+    "constant.builtin": {
+      "foreground": "$constant_builtin",
+      "fontStyle": "bold"
+    },
+    "constant.numeric": {
+      "foreground": "$number"
+    },
+    "constant.numeric.hex": {
+      "foreground": "$number_hex"
+    },
+    "constant.numeric.float": {
+      "foreground": "$number"
+    },
+    "number": {
+      "foreground": "$number"
+    },
+    "variable": {
+      "foreground": "$variable"
+    },
+    "variable.parameter": {
+      "foreground": "$variable_parameter",
+      "fontStyle": "italic"
+    },
+    "variable.language": {
+      "foreground": "$constant_language",
+      "fontStyle": "bold"
+    },
+    "variable.other": {
+      "foreground": "$variable_other"
+    },
+    "variable.other.member": {
+      "foreground": "$variable"
+    },
+    "variable.other.constant": {
+      "foreground": "$constant",
+      "fontStyle": "bold"
+    },
+    "function": {
+      "foreground": "$function"
+    },
+    "function.call": {
+      "foreground": "$function_call"
+    },
+    "function.method": {
+      "foreground": "$function_method"
+    },
+    "entity.name.function": {
+      "foreground": "$entity_name_function",
+      "fontStyle": "bold"
+    },
+    "entity.name.function.constructor": {
+      "foreground": "$entity_name_class",
+      "fontStyle": "bold"
+    },
+    "entity.name.class": {
+      "foreground": "$entity_name_class",
+      "fontStyle": "bold"
+    },
+    "entity.name.interface": {
+      "foreground": "$entity_name_class",
+      "fontStyle": "bold"
+    },
+    "entity.name.enum": {
+      "foreground": "$entity_name_class",
+      "fontStyle": "bold"
+    },
+    "entity.name.namespace": {
+      "foreground": "$type",
+      "fontStyle": "italic"
+    },
+    "entity.name.tag": {
+      "foreground": "$entity_name_tag",
+      "fontStyle": "bold"
+    },
+    "entity.name.tag.html": {
+      "foreground": "$entity_name_tag",
+      "fontStyle": "bold"
+    },
+    "entity.name.tag.xml": {
+      "foreground": "$entity_name_tag",
+      "fontStyle": "bold"
+    },
+    "entity.name.tag.custom": {
+      "foreground": "$entity_name_tag"
+    },
+    "entity.name.attribute": {
+      "foreground": "$entity_name_attribute",
+      "fontStyle": "italic"
+    },
+    "entity.other.attribute-name": {
+      "foreground": "$attribute_name",
+      "fontStyle": "italic"
+    },
+    "entity.other.inherited-class": {
+      "foreground": "$type",
+      "fontStyle": "italic"
+    },
+    "type": {
+      "foreground": "$type",
+      "fontStyle": "bold"
+    },
+    "type.builtin": {
+      "foreground": "$type",
+      "fontStyle": "bold"
+    },
+    "type.class": {
+      "foreground": "$type_class",
+      "fontStyle": "bold"
+    },
+    "type.interface": {
+      "foreground": "$type_interface",
+      "fontStyle": "bold"
+    },
+    "type.enum": {
+      "foreground": "$type_enum",
+      "fontStyle": "bold"
+    },
+    "operator": {
+      "foreground": "$operator"
+    },
+    "operator.arithmetic": {
+      "foreground": "$operator_arithmetic"
+    },
+    "operator.logical": {
+      "foreground": "$operator_logical"
+    },
+    "operator.comparison": {
+      "foreground": "$operator_comparison"
+    },
+    "operator.assignment": {
+      "foreground": "$operator"
+    },
+    "punctuation": {
+      "foreground": "$punctuation"
+    },
+    "punctuation.definition": {
+      "foreground": "$punctuation"
+    },
+    "punctuation.separator": {
+      "foreground": "$punctuation_separator"
+    },
+    "punctuation.bracket": {
+      "foreground": "$punctuation_bracket"
+    },
+    "punctuation.terminator": {
+      "foreground": "$punctuation"
+    },
+    "meta.tag": {
+      "foreground": "$meta_tag"
+    },
+    "meta.tag.html": {
+      "foreground": "$meta_tag"
+    },
+    "meta.tag.xml": {
+      "foreground": "$meta_tag"
+    },
+    "meta.tag.attributes": {
+      "foreground": "$attribute"
+    },
+    "meta.annotation": {
+      "foreground": "$meta_annotation",
+      "fontStyle": "bold"
+    },
+    "meta.decorator": {
+      "foreground": "$decorator",
+      "fontStyle": "bold"
+    },
+    "tag": {
+      "foreground": "$tag"
+    },
+    "tag.name": {
+      "foreground": "$tag_name"
+    },
+    "tag.html": {
+      "foreground": "$tag"
+    },
+    "tag.xml": {
+      "foreground": "$tag"
+    },
+    "tag.css": {
+      "foreground": "$tag"
+    },
+    "attribute": {
+      "foreground": "$attribute"
+    },
+    "attribute.name": {
+      "foreground": "$attribute_name",
+      "fontStyle": "italic"
+    },
+    "attribute.value": {
+      "foreground": "$attribute_value"
+    },
+    "attribute.undefined": {
+      "foreground": "$error"
+    },
+    "invalid": {
+      "foreground": "$invalid",
+      "fontStyle": "bold"
+    },
+    "invalid.illegal": {
+      "foreground": "$error",
+      "fontStyle": "underline"
+    },
+    "invalid.deprecated": {
+      "foreground": "$warning",
+      "fontStyle": "italic underline"
+    },
+    "markup.bold": {
+      "foreground": "$markup_bold",
+      "fontStyle": "bold"
+    },
+    "markup.italic": {
+      "foreground": "$markup_italic",
+      "fontStyle": "italic"
+    },
+    "markup.underline": {
+      "foreground": "$markup_underline",
+      "fontStyle": "underline"
+    },
+    "markup.link": {
+      "foreground": "$markup_link",
+      "fontStyle": "underline"
+    },
+    "markup.code": {
+      "foreground": "$markup_code",
+      "background": "$bg_tertiary"
+    },
+    "markup.heading": {
+      "foreground": "$type",
+      "fontStyle": "bold"
+    },
+    "markup.list": {
+      "foreground": "$keyword"
+    },
+    "markup.quote": {
+      "foreground": "$comment",
+      "fontStyle": "italic"
+    },
+    "source.css .entity.name.tag": {
+      "foreground": "$tag"
+    },
+    "source.css .entity.other.attribute-name.class": {
+      "foreground": "$css_selector"
+    },
+    "source.css .entity.other.attribute-name.id": {
+      "foreground": "$css_selector",
+      "fontStyle": "bold"
+    },
+    "source.css .entity.other.attribute-name.pseudo-class": {
+      "foreground": "$css_pseudo"
+    },
+    "source.css .entity.other.attribute-name.pseudo-element": {
+      "foreground": "$css_pseudo",
+      "fontStyle": "bold"
+    },
+    "source.css .support.type.property-name": {
+      "foreground": "$css_property",
+      "fontStyle": "italic"
+    },
+    "source.css .meta.property-value": {
+      "foreground": "$css_value"
+    },
+    "source.css .support.function": {
+      "foreground": "$css_function"
+    },
+    "source.css .unit": {
+      "foreground": "$css_unit"
+    },
+    "source.css .unit.percentage": {
+      "foreground": "$css_unit"
+    },
+    "source.html .meta.tag.metadata.doctype": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "source.html .meta.tag.metadata.doctype .punctuation": {
+      "foreground": "$keyword"
+    },
+    "source.html .entity.name.tag.html.void": {
+      "foreground": "$tag"
+    },
+    "source.html .entity.other.attribute-name.html": {
+      "foreground": "$attribute_name"
+    },
+    "source.html .entity.other.attribute-name.data-*": {
+      "foreground": "$attribute_name",
+      "fontStyle": "italic"
+    },
+    "text.html .meta.tag.metadata": {
+      "foreground": "$meta_tag"
+    },
+    "text.html entity.name.tag.html": {
+      "foreground": "$tag"
+    },
+    "source.xml .meta.tag.namespace": {
+      "foreground": "$xml_namespace"
+    },
+    "source.xml .meta.tag.metadata.doctype": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "source.xml .meta.tag.metadata.cdata": {
+      "foreground": "$string",
+      "fontStyle": "italic"
+    },
+    "source.xml .entity.name.tag.localname": {
+      "foreground": "$tag"
+    },
+    "source.xml .entity.other.attribute-name": {
+      "foreground": "$attribute_name"
+    },
+    "text.xml .entity.other.attribute-name": {
+      "foreground": "$attribute_name"
+    },
+    "source.java .modifier": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "source.java .meta.annotation": {
+      "foreground": "$java_annotation",
+      "fontStyle": "bold"
+    },
+    "source.java .storage.type.java": {
+      "foreground": "$java_type",
+      "fontStyle": "bold"
+    },
+    "source.java .storage.type.primitive": {
+      "foreground": "$type",
+      "fontStyle": "bold"
+    },
+    "source.java .storage.type.generic": {
+      "foreground": "$type",
+      "fontStyle": "bold"
+    },
+    "source.java .meta.class.identifier": {
+      "foreground": "$type_class",
+      "fontStyle": "bold"
+    },
+    "source.java .meta.method.identifier": {
+      "foreground": "$function",
+      "fontStyle": "bold"
+    },
+    "source.java .variable.language.this": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "source.java .variable.language.super": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "source.java .constant.numeric.java": {
+      "foreground": "$number"
+    },
+    "source.python .keyword.control": {
+      "foreground": "$keyword_control",
+      "fontStyle": "bold"
+    },
+    "source.python .keyword.operator": {
+      "foreground": "$operator"
+    },
+    "source.python .keyword.operator.logical": {
+      "foreground": "$operator_logical"
+    },
+    "source.python .meta.function.decorator": {
+      "foreground": "$python_decorator",
+      "fontStyle": "bold"
+    },
+    "source.python .meta.function.parameters.default": {
+      "foreground": "$constant"
+    },
+    "source.python .support.function.builtin": {
+      "foreground": "$python_builtin",
+      "fontStyle": "bold"
+    },
+    "source.python .constant.language": {
+      "foreground": "$constant_language",
+      "fontStyle": "bold"
+    },
+    "source.python .variable.annotation": {
+      "foreground": "$type",
+      "fontStyle": "italic"
+    },
+    "source.python .meta.type-hint": {
+      "foreground": "$type",
+      "fontStyle": "italic"
+    },
+    "source.python .variable.magic": {
+      "foreground": "$constant",
+      "fontStyle": "bold"
+    },
+    "source.python .string.docstring": {
+      "foreground": "$comment",
+      "fontStyle": "italic"
+    },
+    "source.python .meta.function": {
+      "foreground": "$fg"
+    },
+    "source.python .meta.class": {
+      "foreground": "$fg"
+    },
+    "source.js .meta.function.arrow": {
+      "foreground": "$operator"
+    },
+    "source.js .meta.function.declaration": {
+      "foreground": "$function"
+    },
+    "source.js .meta.function.call": {
+      "foreground": "$function_call"
+    },
+    "source.js .meta.object-literal.key": {
+      "foreground": "$variable"
+    },
+    "source.js .meta.object-literal.key.string": {
+      "foreground": "$string"
+    },
+    "source.js .variable.other.readwrite": {
+      "foreground": "$variable"
+    },
+    "source.js .variable.language.super": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "source.js .variable.language.this": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "source.js .storage.type.class": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "source.js .storage.type.function": {
+      "foreground": "$keyword",
+      "fontStyle": "bold"
+    },
+    "source.js .support.class.builtin": {
+      "foreground": "$type",
+      "fontStyle": "bold"
+    },
+    "source.js .support.function.builtin": {
+      "foreground": "$python_builtin",
+      "fontStyle": "bold"
+    },
+    "source.js .support.constant.math": {
+      "foreground": "$constant",
+      "fontStyle": "bold"
+    },
+    "source.js .support.constant.dom": {
+      "foreground": "$constant",
+      "fontStyle": "bold"
+    },
+    "source.js .support.constant.json": {
+      "foreground": "$constant"
+    },
+    "source.ts .meta.type-annotation": {
+      "foreground": "$type",
+      "fontStyle": "italic"
+    },
+    "source.ts .meta.type-declaration": {
+      "foreground": "$type",
+      "fontStyle": "italic"
+    },
+    "source.tsx .jsx.tag.attribute.name": {
+      "foreground": "$attribute_name"
+    },
+    "source.tsx .jsx.tag.name": {
+      "foreground": "$type"
+    },
+    "source.json .meta.object.member.key": {
+      "foreground": "$string"
+    },
+    "source.json .meta.array": {
+      "foreground": "$punctuation"
+    },
+    "source.json .support.constant.json": {
+      "foreground": "$constant_language",
+      "fontStyle": "bold"
+    },
+    "source.diff .meta.diff.header.file": {
+      "foreground": "$type",
+      "fontStyle": "bold"
+    },
+    "source.diff .punctuation.definition.inserted": {
+      "foreground": "$diff_add"
+    },
+    "source.diff .punctuation.definition.deleted": {
+      "foreground": "$diff_delete"
+    },
+    "source.diff .punctuation.definition.changed": {
+      "foreground": "$diff_change"
+    },
+    "source.diff meta.diff.header": {
+      "foreground": "$type"
+    }
+  },
+  "presets": []
+}

@@ -1,8 +1,18 @@
 import * as fs from "fs/promises";
 import * as path from "path";
+import chalk from "chalk";
 import { logger } from "../utils/logger";
 import { getThemeProjectPaths, ensureThemeProjectStructure, writeManifest } from "../utils/paths";
 import { Manifest } from "../core/manifest";
+
+const MASCOT = `
+/\\ /\\
+((ovo))
+():::()
+  VVV
+`;
+
+const DIVIDER = ".oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.";
 
 const GITIGNORE_CONTENT = `# Generated files
 preview.html
@@ -309,6 +319,10 @@ greet(<span class="string">"Python"</span>)
 
 export async function initCommand(themeName?: string, presetName?: string): Promise<void> {
   try {
+    // Display welcome message
+    console.log(chalk.magenta(MASCOT));
+    logger.divider();
+
     // Use provided theme name or current directory name
     const finalThemeName = themeName || path.basename(process.cwd());
 
@@ -373,15 +387,21 @@ export async function initCommand(themeName?: string, presetName?: string): Prom
     await fs.writeFile(paths.preview, previewHtml, "utf-8");
 
     // Success output
+    console.log();
+    logger.divider();
     logger.success(`Theme project created at ${themeDir}`);
-    logger.info(`\nFiles created:`);
-    logger.info(`  • manifest.json - Theme definition`);
-    logger.info(`  • preview.html - Live preview (in .gitignore)`);
-    logger.info(`  • .gitignore - Git ignore rules`);
-    logger.info(`  • .themebooth/cache/ - Transpilation cache`);
-    logger.info(`\nNext steps:`);
-    logger.info(`  cd ${themeName ? themeName : "."}`);
-    logger.info(`  themebooth preview`);
+    console.log();
+    logger.info(`Files created:`);
+    logger.info(`  • ${chalk.yellow("manifest.json")} - Theme definition`);
+    logger.info(`  • ${chalk.yellow("preview.html")} - Live preview (in .gitignore)`);
+    logger.info(`  • ${chalk.yellow(".gitignore")} - Git ignore rules`);
+    logger.info(`  • ${chalk.yellow(".themebooth/cache/")} - Transpilation cache`);
+    console.log();
+    logger.info(`Next steps:`);
+    logger.info(`  ${chalk.cyan(`cd ${themeName ? themeName : "."}`)} `);
+    logger.info(`  ${chalk.cyan(`themebooth preview`)}`);
+    console.log();
+    logger.divider();
   } catch (error) {
     logger.error(`Failed to initialize theme: ${error instanceof Error ? error.message : String(error)}`);
     throw error;

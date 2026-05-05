@@ -1,3 +1,5 @@
+import chalk from "chalk";
+
 export enum LogLevel {
   DEBUG = 0,
   INFO = 1,
@@ -11,40 +13,39 @@ export function setLogLevel(level: LogLevel): void {
   currentLevel = level;
 }
 
-function format(level: string, message: string): string {
-  return `[${level}] ${message}`;
-}
-
 export const logger = {
   debug: (message: string) => {
     if (currentLevel <= LogLevel.DEBUG) {
-      console.log(format("DEBUG", message));
+      console.log(chalk.gray(`[DEBUG] ${message}`));
     }
   },
   info: (message: string) => {
     if (currentLevel <= LogLevel.INFO) {
-      console.log(format("INFO", message));
+      console.log(chalk.cyan(`ℹ ${message}`));
     }
   },
   warn: (message: string) => {
     if (currentLevel <= LogLevel.WARN) {
-      console.warn(format("WARN", message));
+      console.warn(chalk.yellow(`⚠ ${message}`));
     }
   },
   error: (message: string) => {
     if (currentLevel <= LogLevel.ERROR) {
-      console.error(format("ERROR", message));
+      console.error(chalk.red(`✕ ${message}`));
     }
   },
   success: (message: string) => {
-    console.log(`✓ ${message}`);
+    console.log(chalk.green(`✓ ${message}`));
   },
   title: (message: string) => {
-    console.log(`\n${"=".repeat(50)}`);
-    console.log(message);
-    console.log(`${"=".repeat(50)}\n`);
+    const line = "═".repeat(50);
+    console.log(chalk.cyan(`\n${line}\n${message}\n${line}\n`));
   },
   table: (data: unknown[]) => {
     console.table(data);
+  },
+  divider: (char: string = ".oOo.") => {
+    const padding = Math.floor((process.stdout.columns || 80) / char.length);
+    console.log(chalk.magenta(char.repeat(padding)));
   },
 };
