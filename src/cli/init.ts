@@ -79,7 +79,10 @@ const CUSTOM_MANIFEST: Manifest = {
       foreground: "$builtin",
     },
   },
-  presets: [],
+  semanticTokens: {},
+  languageTokens: {},
+  presets: {},
+  computed: {},
 };
 
 async function loadPresetsFromFiles(): Promise<Record<string, Manifest>> {

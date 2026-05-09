@@ -1,6 +1,7 @@
 import * as readline from "readline";
 import * as path from "path";
-import { validateManifest, Preset, colorOrVariableRegex } from "../core/manifest";
+import { validateManifest, Preset } from "../core/manifest";
+import { colorOrVariableRegex } from "../core/schemas";
 import { readManifest, writeManifest, getThemeProjectPaths } from "../utils/paths";
 import { logger } from "../utils/logger";
 
