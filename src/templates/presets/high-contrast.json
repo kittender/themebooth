@@ -22,15 +22,6 @@
     "builtin": "#ffff00",
     "error": "#ff0000"
   },
-  "colors": {
-    "editor.background": "$background",
-    "editor.foreground": "$foreground",
-    "editor.lineNumberActiveForeground": "$accent",
-    "editor.selectionBackground": "#0066cc",
-    "editor.wordHighlightBackground": "#663300",
-    "editorCursor.foreground": "$accent",
-    "editorWhitespace.foreground": "#666666"
-  },
   "tokens": {
     "keyword": {
       "foreground": "$keyword",
@@ -50,5 +41,5 @@
       "foreground": "$builtin"
     }
   },
-  "presets": []
+  "presets": {}
 }

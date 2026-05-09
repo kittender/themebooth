@@ -1,4 +1,5 @@
 import { Manifest } from "../core/manifest";
+import { extractTokenSettings, filterNullColors } from "../core/schemas";
 
 export interface ZedTheme {
   name: string;
@@ -25,40 +26,44 @@ export function exportZed(manifest: Manifest): ZedTheme {
   }> = [];
 
   for (const [scope, settings] of Object.entries(manifest.tokens || {})) {
-    const zedSettings: Record<string, string | number | boolean> = {};
-
-    if (settings.foreground) {
-      zedSettings.foreground = settings.foreground;
-    }
-    if (settings.background) {
-      zedSettings.background = settings.background;
-    }
+    const extracted = extractTokenSettings(settings);
+    const zedSettings: Record<string, string | number | boolean> = {
+      foreground: extracted.foreground,
+      background: extracted.background,
+      opacity: extracted.opacity,
+    };
 
     const fontStyles: string[] = [];
-    if (settings.fontStyle && typeof settings.fontStyle === "string") {
-      if (settings.fontStyle.includes("bold")) fontStyles.push("bold");
-      if (settings.fontStyle.includes("italic")) fontStyles.push("italic");
-      if (settings.fontStyle.includes("underline")) fontStyles.push("underline");
+    if (extracted.fontStyle && typeof extracted.fontStyle === "string") {
+      if (extracted.fontStyle.includes("bold")) fontStyles.push("bold");
+      if (extracted.fontStyle.includes("italic")) fontStyles.push("italic");
+      if (extracted.fontStyle.includes("underline")) fontStyles.push("underline");
     }
 
     if (fontStyles.length > 0) {
       zedSettings.font_style = fontStyles.join(" ");
     }
 
-    if (settings.opacity !== undefined) {
-      zedSettings.opacity = settings.opacity;
+    // Filter out undefined values
+    const filtered: Record<string, string | number | boolean> = {};
+    for (const [key, value] of Object.entries(zedSettings)) {
+      if (value !== undefined) {
+        filtered[key] = value;
+      }
     }
 
-    tokenColors.push({
-      scope,
-      settings: zedSettings,
-    });
+    if (Object.keys(filtered).length > 0) {
+      tokenColors.push({
+        scope,
+        settings: filtered,
+      });
+    }
   }
 
   return {
     name: manifest.name,
     appearance: detectAppearance(manifest),
-    colors: manifest.colors || {},
+    colors: filterNullColors(manifest.colors || {}),
     token_colors: tokenColors,
   };
 }

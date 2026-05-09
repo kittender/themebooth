@@ -21,13 +21,14 @@ Creates a project with `manifest.json` (your theme definition) and a live previe
 
 ### 2. Define your theme
 
-Edit `manifest.json` with your color palette and syntax rules. Define colors once as variables, reuse them everywhere:
+Edit `manifest.json` with your color palette and syntax rules. Define colors once as variables, reuse them everywhere. Computed colors let you derive variations automatically:
 
 ```json
 {
   "name": "Ocean Dream",
   "description": "A cool, calm syntax theme",
   "author": "you@example.com",
+  "version": "1.0.0",
   "variables": {
     "bg": "#0d1117",
     "fg": "#c9d1d9",
@@ -36,19 +37,24 @@ Edit `manifest.json` with your color palette and syntax rules. Define colors onc
     "string": "#a371f7",
     "comment": "#8b949e"
   },
+  "computed": {
+    "accent_dark": { "base": "$accent", "transform": "darken", "amount": 20 },
+    "error_dark": { "base": "$error", "transform": "darken", "amount": 15 }
+  },
   "colors": {
-    "background": "$bg",
-    "foreground": "$fg"
+    "editor.background": "$bg",
+    "editor.foreground": "$fg",
+    "editorError.foreground": "$error_dark"
   },
   "tokens": {
-    "keyword": { "foreground": "$error", "fontStyle": "bold" },
+    "keyword": { "foreground": "$accent", "fontStyle": "bold" },
     "string": { "foreground": "$string" },
     "comment": { "foreground": "$comment", "fontStyle": "italic" }
   }
 }
 ```
 
-Use `$variableName` anywhere in the file. Change a color once, updates everywhere.
+Use `$variableName` anywhere in the file. Change a color once, updates everywhere. Add computed colors for automatic variations.
 
 ### 3. Preview live changes
 
@@ -90,9 +96,14 @@ Each command guides you through marketplace login and submission.
 - **3 editors**: VS Code, Notepad++, Zed
 - **Single JSON theme definition** (no per-editor config files in v1)
 - **Color variables** (`$colorName`) for DRY theming—define once, reuse everywhere
+- **Computed colors** (darken, lighten, alpha transforms)—derive colors from variables at build time
+- **Theme inheritance** (`extends`)—compose themes by extending parent manifests
+- **Semantic token styling**—language-aware syntax highlighting alongside TextMate scopes
+- **Language-specific tokens**—customize highlighting per programming language
+- **Preset system**—offer theme variants (dark/light, bold/soft) to users
 - **Live HTML preview** with code samples
 - **One-command packaging** to editor-native formats
-- **Built-in syntax presets** (light, dark, high contrast templates)
+- **Interactive preset wizard**—`themebooth preset add` to create and manage presets
 
 ## How it works
 
@@ -155,7 +166,10 @@ Changes to `manifest.json` reload automatically.
 | Command | Purpose |
 |---------|---------|
 | `themebooth init [name]` | Create new theme project |
+| `themebooth init [name] --preset [dark\|light\|high-contrast]` | Create with starter preset |
 | `themebooth preview` | Live preview with hot-reload |
+| `themebooth validate` | Validate manifest.json |
+| `themebooth preset add` | Interactive wizard to create theme variants |
 | `themebooth package` | Package for all platforms |
 | `themebooth publish <platform>` | Publish to marketplace |
 

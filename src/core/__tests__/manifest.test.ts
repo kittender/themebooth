@@ -25,7 +25,7 @@ describe("Manifest Validation", () => {
     const result = validateManifest(manifest);
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.errors.some(e => e.field.includes("version"))).toBe(true);
+      expect(result.errors.some(e => e.field?.includes("version"))).toBe(true);
     }
   });
 
@@ -57,7 +57,7 @@ describe("Manifest Validation", () => {
     const result = validateManifest(manifest);
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.errors.some(e => e.field.includes("variables"))).toBe(true);
+      expect(result.errors.some(e => e.field?.includes("variables"))).toBe(true);
     }
   });
 

@@ -1,4 +1,5 @@
 import { Manifest } from "../core/manifest";
+import { extractTokenSettings, filterNullColors } from "../core/schemas";
 
 export interface VSCodeTheme {
   name: string;
@@ -16,33 +17,18 @@ export function exportVSCode(manifest: Manifest): VSCodeTheme {
   }> = [];
 
   for (const [scope, settings] of Object.entries(manifest.tokens || {})) {
-    const vsCodeSettings: Record<string, string | number> = {};
-
-    if (settings.foreground) {
-      vsCodeSettings.foreground = settings.foreground;
+    const vsCodeSettings = extractTokenSettings(settings);
+    if (Object.keys(vsCodeSettings).length > 0) {
+      tokenColors.push({
+        scope,
+        settings: vsCodeSettings,
+      });
     }
-    if (settings.background) {
-      vsCodeSettings.background = settings.background;
-    }
-    if (settings.fontStyle) {
-      vsCodeSettings.fontStyle = settings.fontStyle;
-    }
-    if (settings.fontWeight) {
-      vsCodeSettings.fontWeight = settings.fontWeight;
-    }
-    if (settings.opacity !== undefined) {
-      vsCodeSettings.opacity = settings.opacity;
-    }
-
-    tokenColors.push({
-      scope,
-      settings: vsCodeSettings,
-    });
   }
 
   return {
     name: manifest.name,
-    colors: manifest.colors || {},
+    colors: filterNullColors(manifest.colors || {}),
     tokenColors,
   };
 }

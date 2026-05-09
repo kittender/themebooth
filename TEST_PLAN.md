@@ -7,8 +7,13 @@ This document outlines a comprehensive testing strategy to verify that Themeboot
 The integration test campaign validates:
 - **Theme creation workflow** (init → edit → preview → package → export)
 - **Manifest validation** (schema compliance, variable resolution, circular reference detection)
+- **Computed colors** (darken, lighten, alpha transforms; chained transforms)
+- **Theme inheritance** (extends field, deep merge, cycle detection, relative paths)
 - **Cross-platform export** (VS Code JSON, Notepad++ XML, Zed JSON)
 - **Syntax highlighting accuracy** (all supported languages and token types)
+- **Semantic tokens** (language-aware highlighting, TextMate scope integration)
+- **Language-specific tokens** (per-language token overrides)
+- **Preset system** (preset definition, wizard creation, preset switching)
 - **Live preview functionality** (hot-reload, code sample updates)
 - **Color accuracy** (hex validation, variable interpolation, contrast ratios)
 
@@ -18,7 +23,7 @@ The integration test campaign validates:
 
 ```bash
 # Install Themebooth globally
-npm install -g themebooth
+npm install -g @kittender/themebooth
 
 # Verify installation
 themebooth --version
@@ -109,30 +114,38 @@ cd ~/themebooth-test-campaign
 
 ### Test 1.3: Manifest Validation
 
-**Objective**: Verify manifest parsing and validation logic
+**Objective**: Verify manifest parsing and validation via `themebooth validate` command
 
 **Steps**:
 1. Start with valid manifest (use preset as base)
 
-2. Test required field validation:
-   - Remove `name` field → validation error
+2. Test required field validation using `themebooth validate`:
+   - Remove `name` field → `themebooth validate` shows error
    - Remove `author` field → validation error
    - Remove `version` field → validation error
    - Remove `variables`, `colors`, `tokens` → should be optional/empty
 
 3. Test version format validation:
    - Valid: "1.0.0", "2.1.3", "0.0.1"
-   - Invalid: "1.0", "v1.0.0", "1.0.0.0" → validation errors
+   - Invalid: "1.0", "v1.0.0", "1.0.0.0" → `themebooth validate` shows errors
 
 4. Test color format validation:
    - Valid: "#ffffff", "#fff", "#123abc", "#0d1117"
    - Invalid: "#gggggg", "#12345", "#12345678" → validation errors
+   - Test auto-fix: `themebooth validate --fix` normalizes colors
 
 5. Test variable naming:
    - Valid: `bg`, `fg`, `keyword_color`, `_accent`, `color123`
    - Invalid: `123invalid`, `color-name`, `color.name` → validation errors
 
-**Expected Result**: All validation rules correctly enforced with clear error messages.
+6. Test CI output:
+   - Run: `themebooth validate --ci`
+   - Verify JSON output contains: `valid`, `errors`, `warnings`, `stats`
+
+7. Test validation statistics:
+   - `themebooth validate` shows counts: variables, colors, tokens, presets, computed
+
+**Expected Result**: `themebooth validate` correctly enforces all validation rules with clear error messages and exit codes (0=valid, 1=errors, 2=warnings only).
 
 ---
 
@@ -231,6 +244,158 @@ cd ~/themebooth-test-campaign
    - Use online WCAG checker or color contrast analysis tool
 
 **Expected Result**: All colors render correctly across all platforms; contrast ratios meet accessibility standards.
+
+---
+
+### Test 2.3: Computed Colors
+
+**Objective**: Verify computed color transforms (darken, lighten, alpha) resolve correctly
+
+**Steps**:
+1. Create manifest with computed colors:
+   ```json
+   {
+     "name": "Computed Test",
+     "author": "Test",
+     "version": "1.0.0",
+     "variables": {
+       "base_blue": "#0066ff",
+       "base_red": "#ff0000"
+     },
+     "computed": {
+       "blue_dark": {
+         "base": "$base_blue",
+         "transform": "darken",
+         "amount": 20
+       },
+       "blue_light": {
+         "base": "$base_blue",
+         "transform": "lighten",
+         "amount": 30
+       },
+       "red_faded": {
+         "base": "$base_red",
+         "transform": "alpha",
+         "amount": 50
+       }
+     },
+     "colors": {
+       "editor.foreground": "$base_blue",
+       "editor.selectionBackground": "$blue_dark",
+       "editor.wordHighlightBackground": "$blue_light"
+     }
+   }
+   ```
+
+2. Run `themebooth preview` and verify:
+   - Darken transform produces darker shade of base color
+   - Lighten transform produces lighter shade of base color
+   - Alpha transform produces semi-transparent color
+   - All computed colors resolve in preview
+
+3. Package theme and verify computed colors exported:
+   - VS Code: final hex values present in `.vscode-theme.json`
+   - Notepad++: RGB values computed and present in `.xml`
+   - Zed: computed colors in `.json`
+
+4. Test computed colors referencing other computed colors:
+   ```json
+   "computed": {
+     "color1": { "base": "$base", "transform": "darken", "amount": 10 },
+     "color2": { "base": "$color1", "transform": "darken", "amount": 10 }
+   }
+   ```
+   Expected: Chained transforms applied correctly
+
+5. Test error cases:
+   - Invalid transform name → validation error
+   - Amount < 0 or > 100 → validation error
+   - Base references undefined variable → validation error
+
+**Expected Result**: Computed colors correctly transform base colors; all transforms applied at build time; chaining works.
+
+---
+
+### Test 2.4: Theme Inheritance
+
+**Objective**: Verify theme inheritance via `extends` field with proper merging
+
+**Steps**:
+1. Create base theme `base-theme.json`:
+   ```json
+   {
+     "name": "Base Theme",
+     "author": "Test Author",
+     "version": "1.0.0",
+     "description": "Base theme for testing",
+     "variables": {
+       "bg": "#1e1e1e",
+       "fg": "#d4d4d4",
+       "accent_blue": "#007acc",
+       "accent_red": "#f48771"
+     },
+     "colors": {
+       "editor.background": "$bg",
+       "editor.foreground": "$fg",
+       "editor.lineNumberForeground": "#858585"
+     },
+     "tokens": {
+       "keyword": {
+         "foreground": "$accent_blue",
+         "fontStyle": "bold"
+       },
+       "comment": {
+         "foreground": "#6a9955",
+         "fontStyle": "italic"
+       }
+     }
+   }
+   ```
+
+2. Create child theme `child-theme.json` in same directory:
+   ```json
+   {
+     "extends": "./base-theme.json",
+     "name": "Child Theme",
+     "version": "1.1.0",
+     "variables": {
+       "accent_blue": "#0ea5e9"
+     },
+     "tokens": {
+       "string": {
+         "foreground": "#a371f7"
+       }
+     }
+   }
+   ```
+
+3. Run `themebooth preview` on child theme and verify:
+   - Child inherits all base variables except overrides
+   - Child overrides: `accent_blue` has new value
+   - Child adds: `string` token from base
+   - Base `keyword` and `comment` tokens inherited
+   - Final theme contains merged fields
+
+4. Test relative path resolution:
+   - Create subdirectory structure: `themes/base/manifest.json`, `themes/child/manifest.json`
+   - Set `"extends": "../base/manifest.json"` in child
+   - Verify relative path resolves correctly
+
+5. Test deep merge behavior:
+   - Base has 10 tokens, child adds 5 new tokens
+   - Expected: Final has 15 tokens (10 + 5 new)
+   - Test that objects are deep-merged, not replaced
+
+6. Test cycle detection (should fail):
+   - Create circular extends: A → B → A
+   - Expected: Validation error on cycle detection
+
+7. Package inherited theme and verify:
+   - VS Code export shows all merged fields
+   - Colors use resolved variables (not `$variable` syntax)
+   - No `extends` field in exported manifests
+
+**Expected Result**: Child manifests inherit parent correctly; deep merge works; cycles detected; exports are clean.
 
 ---
 
@@ -946,6 +1111,177 @@ if __name__ == "__main__":
    - Indentation/structure visible
 
 **Expected Result**: Python syntax with all modern features (type hints, dataclasses, walrus operator) properly highlighted.
+
+---
+
+### Test 3.7: Semantic Tokens
+
+**Objective**: Verify semantic token styling works alongside TextMate scopes
+
+**Steps**:
+1. Create manifest with semantic tokens:
+   ```json
+   {
+     "semanticTokens": {
+       "variable": {
+         "foreground": "#569cd6"
+       },
+       "variable.readonly": {
+         "foreground": "#4ec9b0",
+         "fontStyle": "bold"
+       },
+       "function": {
+         "foreground": "#dcdcaa"
+       },
+       "function.builtin": {
+         "foreground": "#ce9178",
+         "fontStyle": "italic"
+       },
+       "type": {
+         "foreground": "#4ec9b0"
+       },
+       "namespace": {
+         "foreground": "#9cdcfe"
+       }
+     }
+   }
+   ```
+
+2. Test with JavaScript file using semantic highlighting:
+   ```javascript
+   const PI = 3.14159;  // readonly variable
+   let counter = 0;     // mutable variable
+   function process(data) { }  // function
+   const map = Array.map;      // builtin function
+   class MyClass { }   // type
+   namespace.subnamespace;  // namespace
+   ```
+
+3. Run preview and verify:
+   - Semantic tokens override TextMate scopes where applicable
+   - Readonly variables highlighted distinctly
+   - Builtin functions properly styled
+   - Type names use semantic styling
+
+4. Package and verify semantic tokens exported:
+   - VS Code: semanticTokenColors included (if supported)
+   - Zed: semantic token mappings included
+
+**Expected Result**: Semantic tokens style correctly; work alongside TextMate scopes without conflicts.
+
+---
+
+### Test 3.8: Language-Specific Tokens
+
+**Objective**: Verify per-language token overrides work correctly
+
+**Steps**:
+1. Create manifest with language-specific tokens:
+   ```json
+   {
+     "tokens": {
+       "keyword": {
+         "foreground": "#0066ff"
+       }
+     },
+     "languageTokens": {
+       "python": {
+         "keyword": {
+           "foreground": "#ffaa00"
+         },
+         "decorator": {
+           "foreground": "#ff00ff"
+         }
+       },
+       "javascript": {
+         "keyword": {
+           "foreground": "#ffdd00"
+         }
+       },
+       "java": {
+         "keyword": {
+           "foreground": "#ff0000",
+           "fontStyle": "bold"
+         }
+       }
+     }
+   }
+   ```
+
+2. Test with multi-language project:
+   - Python file: keywords use `#ffaa00` (not `#0066ff`)
+   - JavaScript file: keywords use `#ffdd00`
+   - Java file: keywords use `#ff0000` bold
+   - Other languages: use default `#0066ff`
+
+3. Verify language detection:
+   - File extension correctly identifies language
+   - Each language token set applied independently
+
+4. Test nested language tokens:
+   - HTML file with embedded JavaScript
+   - Expected: JS tokens within HTML use `languageTokens.javascript`
+
+5. Package and verify:
+   - VS Code: language-specific rules in tokenColors
+   - Zed: per-language overrides included
+
+**Expected Result**: Each language renders with correct language-specific tokens; defaults used for unlisted languages.
+
+---
+
+### Test 3.9: Preset Wizard CLI
+
+**Objective**: Verify interactive preset creation via `themebooth preset add`
+
+**Steps**:
+1. Create theme with base variables:
+   ```bash
+   themebooth init preset-test
+   cd preset-test
+   ```
+
+2. Run preset wizard:
+   ```bash
+   themebooth preset add
+   ```
+
+3. Test interactive prompts:
+   - Wizard shows each variable with current value
+   - User can skip or override each variable
+   - Wizard validates hex colors and `$variable` references
+   - Invalid input rejected with clear error
+   - Wizard shows preview of preset
+
+4. Create "dark" preset:
+   - Override bg to darker shade
+   - Override fg to lighter shade
+   - Leave accent unchanged
+   - Name preset "dark"
+
+5. Create "high-contrast" preset:
+   - Increase contrast of all colors
+   - Add "High contrast for accessibility" description
+
+6. Verify presets saved:
+   ```bash
+   cat manifest.json | grep -A 50 '"presets"'
+   ```
+   Expected: manifest contains preset definitions
+
+7. Test preset with package:
+   ```bash
+   themebooth package
+   ```
+   Expected: Generated themes include preset support
+
+8. Test preset switching in editor (if supported):
+   - Install theme in target editor
+   - Verify preset selector available
+   - Switch between presets
+   - Colors update correctly
+
+**Expected Result**: Preset wizard creates valid presets; presets exported correctly; user can switch between presets in editors.
 
 ---
 

@@ -1,4 +1,9 @@
 import { Manifest } from "./manifest";
+import {
+  interpolateString as sharedInterpolateString,
+  extractVariableReferences,
+  ValidationError,
+} from "./schemas";
 
 export interface VariableResolutionError {
   variable: string;
@@ -65,7 +70,7 @@ function resolveVariable(
   visiting.add(name);
 
   // Check if the value contains a variable reference
-  const varRefMatch = value.match(/\$(\w+)/);
+  const varRefMatch = value.match(/\$([\w-]+)/);
   if (varRefMatch) {
     const refVarName = varRefMatch[1];
     if (!(refVarName in allVariables)) {
@@ -104,9 +109,19 @@ export function interpolateManifest(
   manifest: Manifest,
   resolvedVariables: Record<string, string>
 ): Manifest {
+  const colors = manifest.colors || {};
+  const interpolatedColors: Record<string, string | null> = {};
+  for (const [key, value] of Object.entries(colors)) {
+    if (value === null) {
+      interpolatedColors[key] = null;
+    } else {
+      interpolatedColors[key] = sharedInterpolateString(value, resolvedVariables);
+    }
+  }
+
   return {
     ...manifest,
-    colors: interpolateObject(manifest.colors || {}, resolvedVariables),
+    colors: interpolatedColors,
     tokens: interpolateTokens(manifest.tokens || {}, resolvedVariables),
   };
 }
@@ -117,7 +132,7 @@ function interpolateObject(
 ): Record<string, string> {
   const result: Record<string, string> = {};
   for (const [key, value] of Object.entries(obj)) {
-    result[key] = interpolateString(value, variables);
+    result[key] = sharedInterpolateString(value, variables);
   }
   return result;
 }
@@ -131,7 +146,7 @@ function interpolateTokens(
     result[scope] = {};
     for (const [prop, value] of Object.entries(settings)) {
       if (typeof value === "string") {
-        result[scope][prop] = interpolateString(value, variables);
+        result[scope][prop] = sharedInterpolateString(value, variables);
       } else {
         result[scope][prop] = value;
       }
@@ -140,25 +155,18 @@ function interpolateTokens(
   return result;
 }
 
-function interpolateString(value: string, variables: Record<string, string>): string {
-  return value.replace(/\$(\w+)/g, (match, varName) => {
-    return variables[varName] || match;
-  });
-}
-
 /**
  * Validates that all $variableName references point to existing variables.
  */
 export function validateVariableReferences(manifest: Manifest): ValidationError[] {
   const errors: ValidationError[] = [];
-  const undefinedVars = new Set<string>();
 
   // Check colors
   for (const [key, value] of Object.entries(manifest.colors || {})) {
+    if (value === null || value === undefined) continue;
     const refs = extractVariableReferences(value);
     for (const ref of refs) {
       if (!(ref in (manifest.variables || {}))) {
-        undefinedVars.add(ref);
         errors.push({
           location: `colors.${key}`,
           variable: ref,
@@ -175,7 +183,6 @@ export function validateVariableReferences(manifest: Manifest): ValidationError[
         const refs = extractVariableReferences(value);
         for (const ref of refs) {
           if (!(ref in (manifest.variables || {}))) {
-            undefinedVars.add(ref);
             errors.push({
               location: `tokens.${scope}.${prop}`,
               variable: ref,
@@ -190,18 +197,4 @@ export function validateVariableReferences(manifest: Manifest): ValidationError[
   return errors;
 }
 
-function extractVariableReferences(value: string): string[] {
-  const refs: string[] = [];
-  const regex = /\$(\w+)/g;
-  let match;
-  while ((match = regex.exec(value)) !== null) {
-    refs.push(match[1]);
-  }
-  return refs;
-}
-
-export interface ValidationError {
-  location: string;
-  variable: string;
-  message: string;
-}
+export type { ValidationError };

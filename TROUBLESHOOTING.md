@@ -141,11 +141,32 @@ themebooth preview
 
 ## Manifest Validation
 
+### Validating your manifest
+
+**Best practice**: Use `themebooth validate` before packaging:
+
+```bash
+themebooth validate              # Check for errors and warnings
+themebooth validate --fix        # Auto-fix color format issues
+themebooth validate --ci         # CI/CD output (JSON)
+```
+
+The validate command checks:
+- Required fields (name, author, version, etc.)
+- Color formats and variable references
+- Circular dependencies
+- Token properties
+- Computed colors
+- Theme inheritance (extends)
+- Export compatibility
+
+---
+
 ### `Invalid manifest: Missing required field 'name'`
 
 **Cause**: Required field missing from manifest.json
 
-**Solution**: Add missing field:
+**Solution**: Run `themebooth validate` to identify missing fields, then add:
 ```json
 {
   "name": "My Theme",
@@ -233,6 +254,150 @@ Fix by removing reference:
       "fontStyle": "bold",          // ✅
       "fontSize": "14px"            // ❌ Not supported
     }
+  }
+}
+```
+
+### `Computed color transform failed`
+
+**Cause**: Invalid base color or transform parameters
+
+**Valid transforms**: `darken`, `lighten`, `alpha`
+**Valid amount**: 0-100 (percentage)
+**Valid base**: hex color (#rrggbb) or variable reference ($variableName)
+
+**Solution**:
+```json
+{
+  "computed": {
+    "color_dark": {
+      "base": "$accent",         // ✅ Valid variable reference
+      "transform": "darken",     // ✅ Valid transform
+      "amount": 20               // ✅ Valid amount (0-100)
+    },
+    "bad_example": {
+      "base": "#gggggg",        // ❌ Invalid hex
+      "transform": "shadow",    // ❌ Invalid transform
+      "amount": 150             // ❌ Invalid amount (>100)
+    }
+  }
+}
+```
+
+### `Theme inheritance: Circular extends detected`
+
+**Cause**: Manifests form a cycle (A → B → A)
+
+**Solution**: Check the `extends` chain:
+```json
+{
+  "extends": "./theme-a.json"   // theme-a.json extends theme-b.json
+}
+// theme-b.json extends ./theme-a.json  ❌ Cycle detected
+```
+
+Fix by breaking the cycle:
+```json
+{
+  "extends": "./base-theme.json"  // ✅ Points to unrelated base
+}
+```
+
+### `Cannot resolve theme extends path`
+
+**Cause**: `extends` path invalid or relative path not resolved
+
+**Solution**: Use correct relative path:
+```json
+{
+  "extends": "../parent/manifest.json"  // ✅ Relative to current manifest
+}
+// NOT:
+{
+  "extends": "/absolute/path/manifest.json"  // ❌ Absolute paths not supported
+}
+```
+
+---
+
+## Presets
+
+### `Preset wizard (themebooth preset add) hangs`
+
+**Cause**: Input not being read from stdin
+
+**Solution**:
+```bash
+# Make sure you're running interactively
+themebooth preset add   # ✅
+
+# Not in non-interactive context
+echo "n" | themebooth preset add   # ❌ May fail
+```
+
+### `Invalid preset name or values`
+
+**Cause**: Preset name contains invalid characters or color values invalid
+
+**Solution**: Preset names auto-converted to snake_case:
+```json
+{
+  "presets": {
+    "my preset":      // ✅ Converted to "my_preset"
+    "Dark-Bold":      // ✅ Converted to "dark_bold"
+    "123invalid":     // ⚠️ Allowed but unconventional
+  }
+}
+```
+
+Values must be valid colors or `$variable` references:
+```json
+{
+  "presets": {
+    "dark": {
+      "variableOverrides": {
+        "bg": "#000000",        // ✅ Valid hex
+        "accent": "$base_color" // ✅ Valid variable reference
+      }
+    }
+  }
+}
+```
+
+---
+
+## Semantic and Language-Specific Tokens
+
+### `Semantic tokens not applying`
+
+**Cause**: Editor may not support semantic tokens, or token name not recognized
+
+**Solution**: Use standard token names:
+```json
+{
+  "semanticTokens": {
+    "variable": { "foreground": "#569cd6" },        // ✅ Standard
+    "function.builtin": { "foreground": "#ce9178" } // ✅ Standard
+    "custom_unknown": { "foreground": "#fff" }      // ⚠️ May not work
+  }
+}
+```
+
+### `Language-specific tokens not applying`
+
+**Cause**: Language not detected correctly, or language code incorrect
+
+**Supported languages**: javascript, python, java, css, html, xml, and others matching VS Code language identifiers
+
+**Solution**: Use correct language identifiers:
+```json
+{
+  "languageTokens": {
+    "python": { },          // ✅ Correct
+    "py": { },              // ❌ Wrong (should be "python")
+    "js": { },              // ❌ Wrong (should be "javascript")
+    "javascript": { },      // ✅ Correct
+    "typescript": { },      // ✅ Correct
   }
 }
 ```

@@ -25,7 +25,29 @@ Complete reference for the `manifest.json` configuration file.
       "opacity": "0-1"
     }
   },
-  "presets": []
+  "semanticTokens": {
+    "tokenType": { "foreground": "#rrggbb or $variable" }
+  },
+  "languageTokens": {
+    "language": {
+      "tokenType": { "foreground": "#rrggbb or $variable" }
+    }
+  },
+  "computed": {
+    "computedColorName": {
+      "base": "#rrggbb or $variable",
+      "transform": "darken | lighten | alpha",
+      "amount": 0-100
+    }
+  },
+  "presets": {
+    "presetName": {
+      "description": "Preset description",
+      "variableOverrides": { "variableName": "#rrggbb" },
+      "tokenOverrides": { "tokenType": { "foreground": "#rrggbb" } }
+    }
+  },
+  "extends": "path/to/parent-manifest.json"
 }
 ```
 
@@ -172,22 +194,226 @@ Common token types (VS Code TextMate scopes):
 }
 ```
 
-## Presets
+## Semantic Tokens
 
-**Type**: `array<string>`
-**Description**: List of built-in preset templates to inherit from (optional)
-
-**Available presets**:
-- `dark` - Dark mode with cool blues
-- `light` - Light mode with warm tones
-- `high-contrast` - Accessibility-focused max contrast
+**Type**: `object<token-type, token-style>`
+**Description**: Semantic token styling (language-aware highlighting). Works alongside TextMate scopes for better accuracy on supported editors.
 
 **Example**:
 ```json
 {
-  "presets": []
+  "semanticTokens": {
+    "variable": {
+      "foreground": "$accent_blue"
+    },
+    "function.builtin": {
+      "foreground": "$accent_green",
+      "fontStyle": "bold"
+    }
+  }
 }
 ```
+
+## Language-Specific Tokens
+
+**Type**: `object<language, object<token-type, token-style>>`
+**Description**: Per-language token overrides. Let you customize highlighting rules for specific programming languages.
+
+**Example**:
+```json
+{
+  "languageTokens": {
+    "python": {
+      "keyword": {
+        "foreground": "$accent_blue"
+      }
+    },
+    "javascript": {
+      "keyword": {
+        "foreground": "$accent_orange"
+      }
+    }
+  }
+}
+```
+
+## Computed Colors
+
+**Type**: `object<computed-name, computed-entry>`
+**Description**: Build-time color transforms. Define derived colors by darkening, lightening, or adjusting opacity of base colors.
+
+**Transforms**:
+- `darken` - Darken a color by percentage
+- `lighten` - Lighten a color by percentage
+- `alpha` - Set opacity (0-100 becomes 0-1 scale)
+
+**Base value**: Can reference variables (`$variableName`) or literal hex colors (`#rrggbb`)
+
+**Example**:
+```json
+{
+  "computed": {
+    "accent_dark": {
+      "base": "$accent",
+      "transform": "darken",
+      "amount": 20
+    },
+    "accent_light": {
+      "base": "$accent",
+      "transform": "lighten",
+      "amount": 15
+    },
+    "accent_faded": {
+      "base": "$accent",
+      "transform": "alpha",
+      "amount": 50
+    },
+    "error_darker": {
+      "base": "#ff7b72",
+      "transform": "darken",
+      "amount": 30
+    }
+  },
+  "colors": {
+    "editor.background": "$bg",
+    "editor.errorForeground": "$error_darker"
+  },
+  "tokens": {
+    "keyword": {
+      "background": "$accent_faded"
+    }
+  }
+}
+```
+
+**Rules**:
+- Computed colors can reference variables or each other
+- Amount: 0-100 (percentage-based)
+- Computed colors are resolved at build time
+- Available everywhere: colors, tokens, semantic tokens, language tokens, presets
+
+## Theme Inheritance (extends)
+
+**Type**: `string`
+**Description**: Path to parent manifest to extend. Child manifest deep-merges with parent, enabling theme composition and reuse.
+
+**Features**:
+- Relative paths resolve from manifest directory
+- Deep merge: arrays are concatenated, objects are merged
+- Child values override parent values
+- Cycle detection prevents infinite loops
+- After merge, `extends` field is stripped (not exported)
+
+**Example parent** (`base-theme.json`):
+```json
+{
+  "name": "Base Theme",
+  "author": "Theme Author",
+  "version": "1.0.0",
+  "variables": {
+    "bg": "#1e1e1e",
+    "fg": "#d4d4d4",
+    "accent": "#007acc"
+  },
+  "tokens": {
+    "keyword": {
+      "foreground": "$accent",
+      "fontStyle": "bold"
+    }
+  }
+}
+```
+
+**Example child** (`ocean-dream.json`):
+```json
+{
+  "extends": "./base-theme.json",
+  "name": "Ocean Dream",
+  "version": "1.1.0",
+  "variables": {
+    "accent": "#0ea5e9"
+  },
+  "tokens": {
+    "string": {
+      "foreground": "#a371f7"
+    }
+  }
+}
+```
+
+**Result** (after merge):
+```json
+{
+  "name": "Ocean Dream",
+  "author": "Theme Author",
+  "version": "1.1.0",
+  "variables": {
+    "bg": "#1e1e1e",
+    "fg": "#d4d4d4",
+    "accent": "#0ea5e9"
+  },
+  "tokens": {
+    "keyword": {
+      "foreground": "$accent",
+      "fontStyle": "bold"
+    },
+    "string": {
+      "foreground": "#a371f7"
+    }
+  }
+}
+```
+
+## Presets
+
+**Type**: `object<preset-name, preset>`
+**Description**: Named preset templates. Each preset is a partial override of variables, tokens, and software-specific settings. Enable users to switch theme variants (dark/light, bold/soft, etc.) via UI.
+
+**Preset structure**:
+- `description`: Human-readable preset name
+- `variableOverrides`: Partial variable overrides for this preset
+- `tokenOverrides`: Partial token overrides for this preset
+- `softwareOverrides`: Editor-specific settings overrides
+
+**Example**:
+```json
+{
+  "presets": {
+    "dark": {
+      "description": "Dark theme variant",
+      "variableOverrides": {
+        "bg": "#0d1117",
+        "fg": "#c9d1d9"
+      }
+    },
+    "light": {
+      "description": "Light theme variant",
+      "variableOverrides": {
+        "bg": "#ffffff",
+        "fg": "#1e1e1e"
+      }
+    },
+    "bold": {
+      "description": "High contrast variant",
+      "tokenOverrides": {
+        "keyword": {
+          "fontStyle": "bold"
+        },
+        "comment": {
+          "fontStyle": "italic"
+        }
+      }
+    }
+  }
+}
+```
+
+**Interactive preset wizard**:
+```bash
+themebooth preset add
+```
+
+This command walks you through each variable and collects only the values you want to override, then saves to `manifest.json`.
 
 ## Color Format
 
@@ -244,7 +470,7 @@ Use `$variableName` syntax to reference defined variables anywhere in colors or 
   "name": "Ocean Dream",
   "author": "Jane Doe",
   "description": "A cool, calm syntax theme for night coding",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "variables": {
     "bg": "#0d1117",
     "fg": "#c9d1d9",
@@ -255,6 +481,23 @@ Use `$variableName` syntax to reference defined variables anywhere in colors or 
     "accent_purple": "#d2a8ff",
     "accent_gray": "#8b949e"
   },
+  "computed": {
+    "accent_blue_dark": {
+      "base": "$accent_blue",
+      "transform": "darken",
+      "amount": 20
+    },
+    "accent_blue_faded": {
+      "base": "$accent_blue",
+      "transform": "alpha",
+      "amount": 40
+    },
+    "error_dark": {
+      "base": "$accent_red",
+      "transform": "darken",
+      "amount": 15
+    }
+  },
   "colors": {
     "editor.background": "$bg",
     "editor.foreground": "$fg",
@@ -262,7 +505,8 @@ Use `$variableName` syntax to reference defined variables anywhere in colors or 
     "editor.lineForeground": "#21262d",
     "editor.selectionBackground": "#388bfd33",
     "editorCursor.foreground": "$accent_blue",
-    "editorWhitespace.foreground": "#3d444d"
+    "editorWhitespace.foreground": "#3d444d",
+    "editorError.foreground": "$error_dark"
   },
   "tokens": {
     "keyword": {
@@ -286,7 +530,43 @@ Use `$variableName` syntax to reference defined variables anywhere in colors or 
       "foreground": "$accent_blue"
     }
   },
-  "presets": []
+  "semanticTokens": {
+    "variable": {
+      "foreground": "$fg"
+    },
+    "function.builtin": {
+      "foreground": "$accent_blue",
+      "fontStyle": "bold"
+    }
+  },
+  "languageTokens": {
+    "python": {
+      "keyword": {
+        "foreground": "$accent_blue"
+      }
+    },
+    "javascript": {
+      "keyword": {
+        "foreground": "$accent_orange"
+      }
+    }
+  },
+  "presets": {
+    "dark": {
+      "description": "Dark variant",
+      "variableOverrides": {
+        "bg": "#000000",
+        "fg": "#ffffff"
+      }
+    },
+    "high-contrast": {
+      "description": "High contrast for accessibility",
+      "variableOverrides": {
+        "accent_blue": "#0066ff",
+        "accent_red": "#ff0000"
+      }
+    }
+  }
 }
 ```
 

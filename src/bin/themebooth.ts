@@ -1,19 +1,26 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
+import { readFileSync } from "fs";
+import { join } from "path";
 import { initCommand } from "../cli/init";
 import { previewCommand } from "../cli/preview";
 import { packageCommand } from "../cli/package";
 import { publishCommand } from "../cli/publish";
 import { presetAddCommand } from "../cli/preset";
+import { validateCommand } from "../cli/validate";
 import { logger } from "../utils/logger";
+
+const packageJson = JSON.parse(
+  readFileSync(join(__dirname, "../../package.json"), "utf-8")
+);
 
 const program = new Command();
 
 program
   .name("themebooth")
   .description("Create syntax themes once, publish to VS Code, Notepad++, and Zed")
-  .version("0.1.0");
+  .version(packageJson.version, "-v, --version");
 
 program
   .command("init [name]")
@@ -52,6 +59,32 @@ Examples:
   .action(async () => {
     try {
       await previewCommand();
+    } catch (error) {
+      process.exit(1);
+    }
+  });
+
+program
+  .command("validate [path]")
+  .description("Validate manifest.json for errors and compatibility")
+  .option("--fix", "Auto-convert colors to hex format")
+  .option("--ci", "Machine-readable JSON output for CI/CD")
+  .addHelpText("after", `
+Comprehensive validation: schema, variables, colors, tokens, presets, extends.
+Catches errors at edit time before packaging.
+
+Examples:
+  $ themebooth validate
+  $ themebooth validate ./custom.json
+  $ themebooth validate --fix
+  $ themebooth validate --ci | jq .valid
+  `)
+  .action(async (path, options) => {
+    try {
+      await validateCommand(path, {
+        fix: options.fix || false,
+        ci: options.ci || false,
+      });
     } catch (error) {
       process.exit(1);
     }

@@ -96,9 +96,9 @@ export async function validateManifestComprehensive(manifestPath: string): Promi
       for (const err of schemaValidation.errors) {
         errors.push({
           severity: "error",
-          field: err.field,
+          field: err.field || "unknown",
           message: err.message,
-          suggestion: getSuggestionForError(err.field, err.message),
+          suggestion: getSuggestionForError(err.field || "unknown", err.message),
         });
       }
     } else {
@@ -109,7 +109,7 @@ export async function validateManifestComprehensive(manifestPath: string): Promi
       for (const err of varErrors) {
         errors.push({
           severity: "error",
-          field: err.location,
+          field: err.location || "unknown",
           message: err.message,
           suggestion: `Define variable $${err.variable} in the "variables" section`,
         });

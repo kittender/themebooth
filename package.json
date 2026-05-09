@@ -1,6 +1,6 @@
 {
   "name": "themebooth",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Create syntax themes once, publish to VS Code, Notepad++, and Zed",
   "main": "dist/index.js",
   "bin": {
@@ -9,6 +9,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/kittender/themebooth.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "homepage": "https://github.com/kittender/themebooth",
   "bugs": {
@@ -32,7 +35,7 @@
     "colors",
     "color"
   ],
-  "author": "kittender",
+  "author": "Melina Donati ☆ =^._.^= ∫",
   "license": "MIT",
   "dependencies": {
     "chalk": "^5.3.0",
