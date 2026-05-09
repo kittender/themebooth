@@ -5,6 +5,7 @@ import { initCommand } from "../cli/init";
 import { previewCommand } from "../cli/preview";
 import { packageCommand } from "../cli/package";
 import { publishCommand } from "../cli/publish";
+import { presetAddCommand } from "../cli/preset";
 import { logger } from "../utils/logger";
 
 const program = new Command();
@@ -94,6 +95,28 @@ Examples:
   .action(async (platform) => {
     try {
       await publishCommand(platform);
+    } catch (error) {
+      process.exit(1);
+    }
+  });
+
+const presetCmd = program
+  .command("preset")
+  .description("Manage theme presets");
+
+presetCmd
+  .command("add")
+  .description("Interactively add a named preset to manifest.json")
+  .addHelpText("after", `
+Prompts for a preset name then walks through each variable,
+allowing per-variable overrides. Press Enter to keep current value.
+
+Examples:
+  $ themebooth preset add
+  `)
+  .action(async () => {
+    try {
+      await presetAddCommand();
     } catch (error) {
       process.exit(1);
     }

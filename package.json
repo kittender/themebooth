@@ -32,7 +32,7 @@
     "colors",
     "color"
   ],
-  "author": "Kittender",
+  "author": "kittender",
   "license": "MIT",
   "dependencies": {
     "chalk": "^5.3.0",

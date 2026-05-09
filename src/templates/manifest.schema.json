@@ -115,11 +115,62 @@
       }
     },
     "presets": {
-      "type": "array",
-      "description": "Built-in presets to extend from",
-      "items": {
-        "type": "string",
-        "enum": ["dark", "light", "high-contrast"]
+      "type": "object",
+      "description": "Named presets that override variables and tokens",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "variableOverrides": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "tokenOverrides": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "softwareOverrides": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "extends": {
+      "type": "string",
+      "description": "Path to a parent manifest to inherit from (relative to this file)"
+    },
+    "computed": {
+      "type": "object",
+      "description": "Build-time computed color transformations",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["base", "transform", "amount"],
+        "properties": {
+          "base": {
+            "type": "string",
+            "description": "Source variable name ($variable) or hex color"
+          },
+          "transform": {
+            "type": "string",
+            "enum": ["darken", "lighten", "alpha"]
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "additionalProperties": false
       }
     }
   },

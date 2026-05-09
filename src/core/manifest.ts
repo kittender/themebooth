@@ -1,28 +1,31 @@
 import { z } from "zod";
+import {
+  hexColorRegex,
+  colorOrVariableRegex,
+  hexColorSchema,
+  colorOrVariableSchema,
+  tokenSettingsSchema,
+  ValidationError,
+} from "./schemas";
 
-const HexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-const ColorOrVariableRegex = /^(#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})|\$\w+)$/;
+export type { ValidationError };
 
-const hexColorSchema = z
-  .string()
-  .regex(HexColorRegex, "Invalid hex color format. Use #RRGGBB or #RGB");
+export const presetSchema = z.object({
+  description: z.string().optional(),
+  variableOverrides: z.record(colorOrVariableSchema).optional(),
+  tokenOverrides: z.record(tokenSettingsSchema).optional(),
+  softwareOverrides: z.record(z.record(z.string())).optional(),
+});
 
-const colorOrVariableSchema = z
-  .string()
-  .regex(ColorOrVariableRegex, "Invalid color format. Use #RRGGBB, #RGB, or $variableName");
+export type Preset = z.infer<typeof presetSchema>;
 
-const validTokenProperties = ["foreground", "background", "fontStyle", "fontWeight", "opacity"] as const;
+export const computedEntrySchema = z.object({
+  base: z.string().regex(colorOrVariableRegex, "base must be a hex color or $variable"),
+  transform: z.enum(["darken", "lighten", "alpha"]),
+  amount: z.number().min(0).max(100),
+});
 
-const tokenSettingsSchema = z
-  .record(z.union([hexColorSchema, z.string(), z.number()]))
-  .refine(
-    (settings) => {
-      return Object.keys(settings).every((key) => validTokenProperties.includes(key as any));
-    },
-    (settings) => ({
-      message: `Invalid token properties. Valid properties: ${validTokenProperties.join(", ")}. Got: ${Object.keys(settings).join(", ")}`,
-    })
-  );
+export type ComputedEntry = z.infer<typeof computedEntrySchema>;
 
 export const ManifestSchema = z.object({
   name: z.string().min(1, "Theme name is required"),
@@ -33,11 +36,13 @@ export const ManifestSchema = z.object({
   variables: z.record(colorOrVariableSchema).optional().default({}),
 
   colors: z
-    .record(z.string())
+    .record(z.union([z.string(), z.null()]))
     .optional()
     .default({})
     .superRefine((colors, ctx) => {
       Object.entries(colors).forEach(([key, value]) => {
+        if (value === null) return;
+
         if (typeof value !== "string") {
           ctx.addIssue({
             code: z.ZodIssueCode.invalid_type,
@@ -49,7 +54,7 @@ export const ManifestSchema = z.object({
           return;
         }
 
-        if (!value.startsWith("$") && !HexColorRegex.test(value)) {
+        if (!value.startsWith("$") && !hexColorRegex.test(value)) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: [key],
@@ -71,7 +76,7 @@ export const ManifestSchema = z.object({
             prop === "background"
           ) {
             const strVal = String(value);
-            if (!strVal.startsWith("$") && !HexColorRegex.test(strVal)) {
+            if (!strVal.startsWith("$") && !hexColorRegex.test(strVal)) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 path: [scope, prop],
@@ -83,16 +88,18 @@ export const ManifestSchema = z.object({
       });
     }),
 
-  presets: z.array(z.enum(["dark", "light", "high-contrast"])).optional().default([]),
+  semanticTokens: z.record(tokenSettingsSchema).optional().default({}),
+
+  languageTokens: z.record(z.record(tokenSettingsSchema)).optional().default({}),
+
+  presets: z.record(presetSchema).optional().default({}),
+
+  extends: z.string().optional(),
+
+  computed: z.record(computedEntrySchema).optional().default({}),
 });
 
 export type Manifest = z.infer<typeof ManifestSchema>;
-
-export interface ValidationError {
-  field: string;
-  message: string;
-  line?: number;
-}
 
 export function validateManifest(data: unknown): { success: true; data: Manifest } | { success: false; errors: ValidationError[] } {
   try {

@@ -1,7 +1,12 @@
 import { exportVSCode } from "../vscode";
 import { exportNotepadPlus } from "../notepad-plus";
 import { exportZed } from "../zed";
+import { exportBrackets } from "../brackets";
+import { exportSublime } from "../sublime";
+import { exportVim } from "../vim";
+import { exportAtom } from "../atom";
 import { Manifest } from "../../core/manifest";
+import { EditorOverlay } from "../../core/overlay";
 
 const createManifest = (partial: Partial<Manifest>): Manifest => ({
   name: "Test Theme",
@@ -11,7 +16,16 @@ const createManifest = (partial: Partial<Manifest>): Manifest => ({
   variables: {},
   colors: {},
   tokens: {},
-  presets: [],
+  semanticTokens: {},
+  languageTokens: {},
+  presets: {},
+  computed: {},
+  ...partial,
+});
+
+const createOverlay = (partial: Partial<EditorOverlay>): EditorOverlay => ({
+  inherits: "./manifest.json",
+  colors: {},
   ...partial,
 });
 
@@ -308,6 +322,418 @@ describe("Zed Exporter", () => {
   });
 });
 
+describe("Brackets Exporter", () => {
+  it("should generate LESS output with comment header", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+        "editor.foreground": "#d4d4d4",
+      },
+      variables: {
+        "color-bg": "#1e1e1e",
+        "color-fg": "#d4d4d4",
+      },
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+          fontStyle: "bold",
+        },
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportBrackets(manifest, overlay);
+
+    expect(result).toContain("Generated Brackets/CodeMirror Theme");
+    expect(result).toContain(".cm-s-themebooth");
+  });
+
+  it("should include variable declarations from manifest", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+      },
+      variables: {
+        "color-bg-primary": "#1e1e1e",
+        "color-fg-primary": "#d4d4d4",
+        "color-semantic-keyword": "#569cd6",
+      },
+      tokens: {},
+    });
+    const overlay = createOverlay({});
+
+    const result = exportBrackets(manifest, overlay);
+
+    expect(result).toContain("@color-bg-primary: #1e1e1e;");
+    expect(result).toContain("@color-fg-primary: #d4d4d4;");
+    expect(result).toContain("@color-semantic-keyword: #569cd6;");
+  });
+
+  it("should include custom LESS selectors from overlay", () => {
+    const manifest = createManifest({
+      colors: { "editor.background": "#1e1e1e" },
+      tokens: {},
+    });
+    const overlay = createOverlay({
+      less: {
+        ".cm-m-xml .cm-tag": {
+          color: "#569cd6",
+        },
+        ".cm-m-css .cm-property": {
+          color: "#9cdcfe",
+        },
+      },
+    });
+
+    const result = exportBrackets(manifest, overlay);
+
+    expect(result).toContain(".cm-s-themebooth .cm-m-xml .cm-tag");
+    expect(result).toContain("color: #569cd6");
+    expect(result).toContain(".cm-s-themebooth .cm-m-css .cm-property");
+    expect(result).toContain("color: #9cdcfe");
+  });
+
+  it("should generate CodeMirror token styles from manifest tokens", () => {
+    const manifest = createManifest({
+      colors: { "editor.background": "#1e1e1e" },
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+          fontStyle: "bold",
+        },
+        string: {
+          foreground: "#ce9178",
+        },
+        comment: {
+          foreground: "#6a9955",
+          fontStyle: "italic",
+        },
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportBrackets(manifest, overlay);
+
+    expect(result).toContain(".cm-s-themebooth .cm-keyword");
+    expect(result).toContain("color: #569cd6");
+    expect(result).toContain("font-style: bold");
+    expect(result).toContain(".cm-s-themebooth .cm-string");
+    expect(result).toContain(".cm-s-themebooth .cm-comment");
+  });
+
+  it("should include decorative elements as comments", () => {
+    const manifest = createManifest({
+      colors: { "editor.background": "#1e1e1e" },
+      tokens: {},
+    });
+    const overlay = createOverlay({
+      decorativeElements: {
+        activeLineSparkle: "✨",
+        errorIcon: "☠",
+      },
+    });
+
+    const result = exportBrackets(manifest, overlay);
+
+    expect(result).toContain("Decorative Elements");
+    expect(result).toContain("activeLineSparkle: ✨");
+    expect(result).toContain("errorIcon: ☠");
+  });
+
+  it("should include visual effects as comments", () => {
+    const manifest = createManifest({
+      colors: { "editor.background": "#1e1e1e" },
+      tokens: {},
+    });
+    const overlay = createOverlay({
+      visualEffects: {
+        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+        lineHighlightOpacity: 0.1,
+      },
+    });
+
+    const result = exportBrackets(manifest, overlay);
+
+    expect(result).toContain("Visual Effects");
+    expect(result).toContain("boxShadow");
+    expect(result).toContain("0 2px 8px rgba(0,0,0,0.3)");
+  });
+
+  it("should output valid LESS syntax", () => {
+    const manifest = createManifest({
+      colors: { "editor.background": "#1e1e1e" },
+      variables: { "color-bg": "#1e1e1e" },
+      tokens: {
+        keyword: { foreground: "#569cd6" },
+      },
+    });
+    const overlay = createOverlay({
+      less: {
+        ".cm-keyword": { color: "#569cd6" },
+      },
+    });
+
+    const result = exportBrackets(manifest, overlay);
+
+    // Check for LESS syntax patterns
+    expect(result).toContain("@");
+    expect(result).toContain(":");
+    expect(result).toContain(";");
+    expect(result).toContain("{");
+    expect(result).toContain("}");
+  });
+
+  it("should handle empty overlay", () => {
+    const manifest = createManifest({
+      colors: { "editor.background": "#1e1e1e" },
+      tokens: {},
+      variables: {},
+    });
+    const overlay = createOverlay({});
+
+    const result = exportBrackets(manifest, overlay);
+
+    expect(result).toBeTruthy();
+    expect(result).toContain(".cm-s-themebooth");
+    expect(result.length).toBeGreaterThan(0);
+  });
+});
+
+describe("Sublime Exporter", () => {
+  it("should export basic theme structure", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+        "editor.foreground": "#d4d4d4",
+      },
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+        },
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportSublime(manifest, overlay);
+
+    expect(result.name).toBe("Test Theme");
+    expect(result.author).toBe("Test Author");
+    expect(result.rules).toHaveLength(1);
+    expect(result.rules[0].scope).toBe("keyword");
+    expect(result.rules[0].foreground).toBe("#569cd6");
+  });
+
+  it("should apply token overrides from overlay", () => {
+    const manifest = createManifest({
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+        },
+      },
+    });
+    const overlay = createOverlay({
+      tokenOverrides: {
+        keyword: {
+          foreground: "#ff0000",
+          fontStyle: "bold",
+        },
+      },
+    });
+
+    const result = exportSublime(manifest, overlay);
+
+    const keywordRule = result.rules.find((r) => r.scope === "keyword");
+    expect(keywordRule?.foreground).toBe("#ff0000");
+    expect(keywordRule?.fontStyle).toBe("bold");
+  });
+
+  it("should build Sublime globals from manifest colors", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+        "editor.foreground": "#d4d4d4",
+        "editor.cursorColor": "#aeafad",
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportSublime(manifest, overlay);
+
+    expect(result.globals.background).toBe("#1e1e1e");
+    expect(result.globals.foreground).toBe("#d4d4d4");
+    expect(result.globals.caret).toBe("#aeafad");
+  });
+
+  it("should serialize to valid JSON", () => {
+    const manifest = createManifest({
+      tokens: {
+        keyword: { foreground: "#569cd6" },
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportSublime(manifest, overlay);
+    const json = JSON.stringify(result);
+
+    expect(() => JSON.parse(json)).not.toThrow();
+    expect(json).toContain("rules");
+    expect(json).toContain("keyword");
+  });
+});
+
+describe("Vim Exporter", () => {
+  it("should generate vim color scheme script", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+        "editor.foreground": "#d4d4d4",
+      },
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+          fontStyle: "bold",
+        },
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportVim(manifest, overlay);
+
+    expect(result).toContain("Generated Vim Color Scheme");
+    expect(result).toContain(`let colors_name = "${manifest.name}"`);
+    expect(result).toContain("hi Normal");
+    expect(result).toContain("#1e1e1e");
+    expect(result).toContain("#d4d4d4");
+  });
+
+  it("should apply token overrides from overlay", () => {
+    const manifest = createManifest({
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+        },
+      },
+    });
+    const overlay = createOverlay({
+      tokenOverrides: {
+        keyword: {
+          foreground: "#ff0000",
+          fontStyle: "bold italic",
+        },
+      },
+    });
+
+    const result = exportVim(manifest, overlay);
+
+    expect(result).toContain("Token Overrides");
+    expect(result).toContain("#ff0000");
+    expect(result).toContain("bold");
+    expect(result).toContain("italic");
+  });
+
+  it("should output valid vim script syntax", () => {
+    const manifest = createManifest({
+      colors: { "editor.background": "#1e1e1e" },
+      tokens: {
+        keyword: { foreground: "#569cd6" },
+        string: { foreground: "#ce9178" },
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportVim(manifest, overlay);
+
+    expect(result).toContain("set background=");
+    expect(result).toContain("hi clear");
+    expect(result).toContain("syntax reset");
+    expect(result).toContain("hi Keyword");
+    expect(result).toContain("hi String");
+  });
+});
+
+describe("Atom Exporter", () => {
+  it("should export basic theme structure", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+        "editor.foreground": "#d4d4d4",
+      },
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+        },
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportAtom(manifest, overlay);
+
+    expect(result.name).toBe("Test Theme");
+    expect(result.author).toBe("Test Author");
+    expect(result.version).toBe("1.0.0");
+    expect(result.tokenColors).toHaveLength(1);
+    expect(result.tokenColors[0].scope).toBe("keyword");
+    expect(result.tokenColors[0].settings.foreground).toBe("#569cd6");
+  });
+
+  it("should apply token overrides from overlay", () => {
+    const manifest = createManifest({
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+        },
+      },
+    });
+    const overlay = createOverlay({
+      tokenOverrides: {
+        keyword: {
+          foreground: "#ff0000",
+          background: "#000000",
+        },
+      },
+    });
+
+    const result = exportAtom(manifest, overlay);
+
+    const keywordToken = result.tokenColors.find((t) => t.scope === "keyword");
+    expect(keywordToken?.settings.foreground).toBe("#ff0000");
+    expect(keywordToken?.settings.background).toBe("#000000");
+  });
+
+  it("should map editor colors to Atom-specific keys", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+        "editor.foreground": "#d4d4d4",
+        "editor.cursorColor": "#aeafad",
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportAtom(manifest, overlay);
+
+    expect(result.colors["editor.backgroundColor"]).toBe("#1e1e1e");
+    expect(result.colors["editor.textColor"]).toBe("#d4d4d4");
+    expect(result.colors["editor.cursorColor"]).toBe("#aeafad");
+  });
+
+  it("should serialize to valid JSON", () => {
+    const manifest = createManifest({
+      tokens: {
+        keyword: { foreground: "#569cd6" },
+      },
+    });
+    const overlay = createOverlay({});
+
+    const result = exportAtom(manifest, overlay);
+    const json = JSON.stringify(result);
+
+    expect(() => JSON.parse(json)).not.toThrow();
+    expect(json).toContain("tokenColors");
+    expect(json).toContain("keyword");
+  });
+});
+
 describe("Exporter Integration", () => {
   it("should handle a complete manifest across all platforms", () => {
     const manifest = createManifest({
@@ -337,19 +763,28 @@ describe("Exporter Integration", () => {
         },
       },
     });
+    const overlay = createOverlay({});
 
     const vscode = exportVSCode(manifest);
     const notepadPlus = exportNotepadPlus(manifest);
     const zed = exportZed(manifest);
+    const sublime = exportSublime(manifest, overlay);
+    const vim = exportVim(manifest, overlay);
+    const atom = exportAtom(manifest, overlay);
 
     // All should successfully generate
     expect(vscode.name).toBe("Complete Theme");
     expect(notepadPlus).toContain("Complete Theme");
     expect(zed.name).toBe("Complete Theme");
+    expect(sublime.name).toBe("Complete Theme");
+    expect(vim).toContain("Complete Theme");
+    expect(atom.name).toBe("Complete Theme");
 
     // All should be serializable
     expect(() => JSON.stringify(vscode)).not.toThrow();
     expect(() => JSON.stringify(zed)).not.toThrow();
-    expect(() => notepadPlus).not.toThrow();
+    expect(() => JSON.stringify(sublime)).not.toThrow();
+    expect(() => JSON.stringify(atom)).not.toThrow();
+    expect(() => vim).not.toThrow();
   });
 });

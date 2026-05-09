@@ -13,7 +13,7 @@ build/
 # Theme project outputs
 *.json.bak
 preview.html
-.themebooth/cache/
+.themebooth/
 
 # Editor & IDE
 .vscode/
@@ -40,3 +40,7 @@ coverage/
 # Temporary
 *.tmp
 *.temp
+
+# Config
+.claude/
+.npmrc

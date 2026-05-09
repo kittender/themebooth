@@ -13,7 +13,10 @@ const createManifest = (partial: Partial<Manifest>): Manifest => ({
   variables: {},
   colors: {},
   tokens: {},
-  presets: [],
+  semanticTokens: {},
+  languageTokens: {},
+  presets: {},
+  computed: {},
   ...partial,
 });
 
@@ -144,5 +147,77 @@ describe("Variable Resolution", () => {
 
     const errors = validateVariableReferences(manifest);
     expect(errors.length).toBe(2);
+  });
+
+  it("should resolve hyphenated variable names in colors", () => {
+    const manifest = createManifest({
+      variables: {
+        "color-bg-primary": "#1e1e1e",
+        "color-fg-primary": "#d4d4d4",
+      },
+      colors: {
+        "editor.background": "$color-bg-primary",
+        "editor.foreground": "$color-fg-primary",
+      },
+    });
+
+    const resResult = resolveVariables(manifest);
+    expect(resResult.success).toBe(true);
+    if (resResult.success) {
+      const interpolated = interpolateManifest(manifest, resResult.variables);
+      expect(interpolated.colors?.["editor.background"]).toBe("#1e1e1e");
+      expect(interpolated.colors?.["editor.foreground"]).toBe("#d4d4d4");
+    }
+  });
+
+  it("should resolve hyphenated variable names in tokens", () => {
+    const manifest = createManifest({
+      variables: {
+        "color-semantic-keyword": "#569cd6",
+        "color-semantic-string": "#ce9178",
+      },
+      tokens: {
+        keyword: {
+          foreground: "$color-semantic-keyword",
+        },
+        string: {
+          foreground: "$color-semantic-string",
+        },
+      },
+    });
+
+    const resResult = resolveVariables(manifest);
+    expect(resResult.success).toBe(true);
+    if (resResult.success) {
+      const interpolated = interpolateManifest(manifest, resResult.variables);
+      expect(interpolated.tokens?.keyword?.foreground).toBe("#569cd6");
+      expect(interpolated.tokens?.string?.foreground).toBe("#ce9178");
+    }
+  });
+
+  it("should validate hyphenated variable references", () => {
+    const manifest = createManifest({
+      variables: {
+        "color-bg-primary": "#1e1e1e",
+      },
+      colors: {
+        "editor.background": "$color-bg-primary",
+      },
+    });
+
+    const errors = validateVariableReferences(manifest);
+    expect(errors.length).toBe(0);
+  });
+
+  it("should detect undefined hyphenated variable references", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "$color-bg-undefined",
+      },
+    });
+
+    const errors = validateVariableReferences(manifest);
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors[0].message).toContain("color-bg-undefined");
   });
 });

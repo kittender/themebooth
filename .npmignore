@@ -1,0 +1,39 @@
+# Development docs
+PLAN.md
+TEST_PLAN.md
+SCHEMA_IMPLEMENTATION.md
+MANIFEST.md
+MANIFEST_SCHEMA.md
+ROADMAP.md
+CLI_HELP.md
+CONTRIBUTING.md
+TROUBLESHOOTING.md
+manifest.example.json
+
+# Source code
+src/
+test.js
+*.test.ts
+*.test.js
+index.js
+dist/**/__tests__/
+dist/**/*.test.js
+dist/**/*.test.js.map
+dist/**/*.test.d.ts
+dist/**/*.test.d.ts.map
+
+# Build/Config
+.claude/
+tsconfig.json
+jest.config.js
+.npmrc
+config/
+bin/
+
+# Git
+.git
+.gitignore
+
+# Node
+node_modules/
+*.lock
