@@ -1,6 +1,8 @@
 # Theme Booth Roadmap
 
-## v1: Easy Tier Support ✓ (In Progress)
+**Current Version**: v0.4.0 (2026-05-12)
+
+## v1: Easy Tier Support ✓ (Complete — v0.4.0)
 Target: VS Code, Sublime Text, Notepad++, Zed
 
 **Goals:**
@@ -28,7 +30,7 @@ Target: VS Code, Sublime Text, Notepad++, Zed
 
 ---
 
-## v2: Medium Tier Support
+## v2: Medium Tier Support ✓ (Complete — v0.4.0)
 Target: IntelliJ IDEA, PyCharm
 
 **Goals:**

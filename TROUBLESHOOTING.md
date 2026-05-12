@@ -2,6 +2,8 @@
 
 Solutions for common Theme Booth issues.
 
+**Current Version**: v0.4.0 (2026-05-12)
+
 ## Installation
 
 ### `themebooth: command not found`
@@ -455,18 +457,18 @@ cat .themebooth/output/my-theme/theme.xml
 
 ## Publishing
 
-### `Platform not supported: sublime`
+### `Platform not supported`
 
 **Cause**: Requesting unsupported platform
 
-**Supported platforms**: vscode, notepad++, zed
+**Supported platforms**: vscode, notepad++, zed, sublime
 
 **Solution**:
 ```bash
 themebooth publish vscode      # ✅
 themebooth publish notepad++   # ✅
 themebooth publish zed         # ✅
-themebooth publish sublime     # ❌ Not yet
+themebooth publish sublime     # ✅
 ```
 
 ### VS Code publish fails with token error

@@ -2,6 +2,8 @@
 
 Thank you for your interest in contributing! This document outlines how to help.
 
+**Current Version**: v0.4.0 (2026-05-12)
+
 ## Getting Started
 
 ### Prerequisites
@@ -97,7 +99,7 @@ git checkout -b fix/bug-description
 
 ### 3. Make Changes
 
-- Keep commits atomic and well-message
+- Keep commits atomic and well-messaged
 - Update tests as needed
 - Run `npm test` before committing
 

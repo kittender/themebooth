@@ -2,6 +2,8 @@
 
 Create beautiful syntax highlighting themes for VS Code, Sublime Text, Notepad++, Zed, and JetBrains IDEs—without learning multiple config formats. Write once, publish everywhere.
 
+**Current Version**: v0.4.0 (2026-05-12)
+
 ## Install
 
 ```bash
@@ -109,9 +111,9 @@ See [Marketplace Submission Guide](docs/jetbrains-marketplace.md)
 
 Each command guides you through marketplace login and submission.
 
-## What v1 supports
+## What's Supported
 
-- **4 editors**: VS Code, Sublime Text, Notepad++, Zed
+- **8 editors**: VS Code, Sublime Text, Notepad++, Zed, IntelliJ IDEA, PyCharm, WebStorm, and other JetBrains IDEs
 - **Single JSON theme definition** (no per-editor config files in v1)
 - **Color variables** (`$colorName`) for DRY theming—define once, reuse everywhere
 - **Computed colors** (darken, lighten, alpha transforms)—derive colors from variables at build time
@@ -190,8 +192,9 @@ Changes to `manifest.json` reload automatically.
 | `themebooth preview` | Live preview with hot-reload |
 | `themebooth validate` | Validate manifest.json |
 | `themebooth preset add` | Interactive wizard to create theme variants |
-| `themebooth export <platform>` | Export to single platform |
+| `themebooth export <platform>` | Export to single platform (vscode, sublime, notepad++, zed, intellij) |
 | `themebooth export-sublime-package` | Create Sublime package for Package Control |
+| `themebooth export-intellij-package` | Create JetBrains plugin JAR for Marketplace |
 | `themebooth package` | Package for all platforms |
 | `themebooth publish <platform>` | Publish to marketplace |
 
@@ -199,9 +202,7 @@ See `themebooth --help` or `themebooth <command> --help` for detailed options.
 
 ## Next: Future versions
 
-**v2** adds IntelliJ IDEA and PyCharm with multi-file support and language-specific overrides.
-
-**v3** brings Eclipse and Visual Studio with advanced plugin structures.
+**v3** (planned) brings Eclipse and Visual Studio with advanced plugin structures.
 
 See [Sublime Text Guide](docs/SUBLIME_GUIDE.md) for advanced Sublime features (color schemes, UI themes, Package Control publishing).
 

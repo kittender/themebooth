@@ -2,6 +2,8 @@
 
 Complete reference for the `manifest.json` configuration file.
 
+**Current Version**: v0.4.0 (2026-05-12)
+
 ## Structure
 
 ```json

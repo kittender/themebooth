@@ -2,6 +2,8 @@
 
 Detailed help for all Theme Booth CLI commands.
 
+**Current Version**: v0.4.0 (2026-05-12)
+
 ## Overview
 
 ```bash
@@ -846,6 +848,9 @@ Commands:
   preview         Start live preview server
   validate        Validate manifest.json
   preset add      Create theme presets interactively
+  export <platform>  Export to single platform
+  export-sublime-package  Create Sublime package for Package Control
+  export-intellij-package  Create JetBrains plugin JAR for Marketplace
   package         Package theme for all platforms
   publish [platform]  Publish theme to marketplace
   help [command]  display help for command
