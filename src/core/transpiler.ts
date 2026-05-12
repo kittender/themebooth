@@ -15,6 +15,8 @@ import { exportVim } from "../exporters/vim";
 import { exportAtom } from "../exporters/atom";
 import { exportHighlightJs } from "../exporters/highlight-js";
 import { exportIntelliJ, serializeIclsXml, generatePluginXml, buildPluginMetadata } from "../exporters/jetbrains";
+import { exportEclipse } from "../exporters/eclipse";
+import { exportVSCodeExtension } from "../exporters/vscode-extension";
 import { logger } from "../utils/logger";
 
 export interface TranspilationResult {
@@ -119,6 +121,7 @@ export async function transpileTheme(
   const vimOverlay = loadOverlay(path.join(manifestDir, "vim.json"));
   const atomOverlay = loadOverlay(path.join(manifestDir, "atom.json"));
   const jetbrainsOverlay = loadOverlay(path.join(manifestDir, "jetbrains.json"));
+  const eclipseOverlay = loadOverlay(path.join(manifestDir, "eclipse.json"));
 
   // Resolve variables in overlays (using extended variables that include computed colors)
   const resolvedVsCodeOverlay = vsCodeOverlay ? resolveOverlayVariables(vsCodeOverlay, extendedVariables) : null;
@@ -127,6 +130,7 @@ export async function transpileTheme(
   const resolvedVimOverlay = vimOverlay ? resolveOverlayVariables(vimOverlay, extendedVariables) : null;
   const resolvedAtomOverlay = atomOverlay ? resolveOverlayVariables(atomOverlay, extendedVariables) : null;
   const resolvedJetbrainsOverlay = jetbrainsOverlay ? resolveOverlayVariables(jetbrainsOverlay, extendedVariables) : null;
+  const resolvedEclipseOverlay = eclipseOverlay ? resolveOverlayVariables(eclipseOverlay, extendedVariables) : null;
 
   // Create output directory
   await fs.mkdir(outputDir, { recursive: true });
@@ -331,6 +335,104 @@ export async function transpileTheme(
     results.push({
       success: false,
       platform: "JetBrains",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
+  // Export to Eclipse IDE
+  try {
+    const eclipseManifest = resolvedEclipseOverlay
+      ? mergeOverlayIntoManifest(interpolated, resolvedEclipseOverlay)
+      : interpolated;
+    const eclipseExport = exportEclipse(eclipseManifest, resolvedEclipseOverlay || null);
+
+    // Create Eclipse directory structure
+    const eclipseDir = path.join(outputDir, "eclipse");
+    const eclipseColorsDir = path.join(eclipseDir, "colors");
+    const eclipseMetaInfDir = path.join(eclipseDir, "META-INF");
+
+    await fs.mkdir(eclipseMetaInfDir, { recursive: true });
+    await fs.mkdir(eclipseColorsDir, { recursive: true });
+
+    // Write color theme XML
+    const colorThemeFileName = `${manifest.name}.eclipse-color-theme.xml`;
+    const colorThemeOutputPath = path.join(eclipseColorsDir, colorThemeFileName);
+    await fs.writeFile(colorThemeOutputPath, eclipseExport.colorThemeXml, "utf-8");
+
+    // Write plugin.xml
+    const eclipsePluginXmlPath = path.join(eclipseDir, "plugin.xml");
+    await fs.writeFile(eclipsePluginXmlPath, eclipseExport.pluginXml, "utf-8");
+
+    // Write MANIFEST.MF
+    const manifestMfPath = path.join(eclipseMetaInfDir, "MANIFEST.MF");
+    await fs.writeFile(manifestMfPath, eclipseExport.manifestMf, "utf-8");
+
+    // Write plugin.properties
+    const pluginPropertiesPath = path.join(eclipseDir, "plugin.properties");
+    await fs.writeFile(pluginPropertiesPath, eclipseExport.pluginProperties, "utf-8");
+
+    // Write EPF preferences
+    const epfFileName = `${manifest.name}.epf`;
+    const epfOutputPath = path.join(eclipseDir, epfFileName);
+    await fs.writeFile(epfOutputPath, eclipseExport.epfContent, "utf-8");
+
+    results.push({
+      success: true,
+      platform: "Eclipse",
+      path: colorThemeOutputPath,
+    });
+  } catch (error) {
+    results.push({
+      success: false,
+      platform: "Eclipse",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
+  // Export to VS Code Extension Scaffold
+  try {
+    const vscodeExtExport = exportVSCodeExtension(interpolated);
+
+    // Create VS Code extension directory structure
+    const vscodeExtDir = path.join(outputDir, "vscode-extension");
+    const vscodeExtThemesDir = path.join(vscodeExtDir, "themes");
+
+    await fs.mkdir(vscodeExtThemesDir, { recursive: true });
+
+    // Write package.json
+    const packageJsonPath = path.join(vscodeExtDir, "package.json");
+    await fs.writeFile(
+      packageJsonPath,
+      JSON.stringify(vscodeExtExport.packageJson, null, 2),
+      "utf-8"
+    );
+
+    // Write extension.ts
+    const extensionTsPath = path.join(vscodeExtDir, "extension.ts");
+    await fs.writeFile(extensionTsPath, vscodeExtExport.extensionTs, "utf-8");
+
+    // Write theme JSON
+    const themeFileName = `${manifest.name.toLowerCase().replace(/\s+/g, "-")}-color-theme.json`;
+    const themeJsonPath = path.join(vscodeExtThemesDir, themeFileName);
+    await fs.writeFile(
+      themeJsonPath,
+      JSON.stringify(vscodeExtExport.themeJson, null, 2),
+      "utf-8"
+    );
+
+    // Write .vscodeignore
+    const vscodeignorePath = path.join(vscodeExtDir, ".vscodeignore");
+    await fs.writeFile(vscodeignorePath, vscodeExtExport.vscodeignore, "utf-8");
+
+    results.push({
+      success: true,
+      platform: "VS Code Extension",
+      path: packageJsonPath,
+    });
+  } catch (error) {
+    results.push({
+      success: false,
+      platform: "VS Code Extension",
       error: error instanceof Error ? error.message : String(error),
     });
   }

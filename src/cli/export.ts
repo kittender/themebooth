@@ -267,3 +267,81 @@ export async function exportIntellijPackageCommand(options: any): Promise<void> 
     (error) => messages.errors.packageCreationFailed(error.message)
   );
 }
+
+export async function exportEclipseCommand(options: any): Promise<void> {
+  return withErrorHandler(
+    async () => {
+      const { themeDir, paths, manifest } = await setupExportEnvironment();
+      const outputDir = options.output || path.join(themeDir, ".themebooth", "output", `${manifest.name}-eclipse`);
+      await fs.mkdir(outputDir, { recursive: true });
+
+      logger.info(messages.info.eclipseExporting(manifest.name, manifest.version));
+
+      const transpilationResult = await transpileTheme(paths.manifest, outputDir);
+
+      const eclipseResults = transpilationResult.results.filter((result) => result.platform === "Eclipse");
+
+      if (eclipseResults.length === 0) {
+        logger.error("Eclipse export failed");
+        throw new Error("No Eclipse export results");
+      }
+
+      logger.success(messages.info.themeExportedTo(outputDir));
+      logger.info("\n" + messages.info.eclipseFilesGenerated);
+
+      for (const result of eclipseResults) {
+        if (result.success && result.path) {
+          const relativePath = path.relative(themeDir, result.path);
+          logger.success(messages.success.platformExportSuccess("Eclipse"));
+          logger.info(`    → ${relativePath}`);
+        }
+      }
+
+      logger.info("\n" + "To import into Eclipse:");
+      logger.info(messages.info.eclipseImportStep1);
+      logger.info(messages.info.eclipseImportStep2);
+      logger.info("\n" + messages.info.eclipseEpfImport);
+    },
+    (error) => messages.errors.themeExportFailed(error.message)
+  );
+}
+
+export async function exportVSCodeExtensionCommand(options: any): Promise<void> {
+  return withErrorHandler(
+    async () => {
+      const { themeDir, paths, manifest } = await setupExportEnvironment();
+      const outputDir = options.output || path.join(themeDir, ".themebooth", "output", `${manifest.name}-vscode-ext`);
+      await fs.mkdir(outputDir, { recursive: true });
+
+      logger.info(messages.info.vscodeExtExporting(manifest.name, manifest.version));
+
+      const transpilationResult = await transpileTheme(paths.manifest, outputDir);
+
+      const vscodeExtResults = transpilationResult.results.filter(
+        (result) => result.platform === "VS Code Extension"
+      );
+
+      if (vscodeExtResults.length === 0) {
+        logger.error("VS Code Extension export failed");
+        throw new Error("No VS Code Extension export results");
+      }
+
+      logger.success(messages.info.themeExportedTo(outputDir));
+      logger.info("\n" + messages.info.vscodeExtFilesGenerated);
+
+      for (const result of vscodeExtResults) {
+        if (result.success && result.path) {
+          const relativePath = path.relative(themeDir, result.path);
+          logger.success(messages.success.platformExportSuccess("VS Code Extension"));
+          logger.info(`    → ${relativePath}`);
+        }
+      }
+
+      logger.info("\n" + "Next steps to publish:");
+      logger.info(messages.info.vscodeExtPublishStep1);
+      logger.info(messages.info.vscodeExtPublishStep2);
+      logger.info(messages.info.vscodeExtPublishStep3);
+    },
+    (error) => messages.errors.themeExportFailed(error.message)
+  );
+}

@@ -9,7 +9,7 @@ import { packageCommand } from "../cli/package";
 import { publishCommand } from "../cli/publish";
 import { presetAddCommand } from "../cli/preset";
 import { validateCommand } from "../cli/validate";
-import { exportCommand, exportSublimePackageCommand, exportIntellijCommand, exportIntellijPackageCommand } from "../cli/export";
+import { exportCommand, exportSublimePackageCommand, exportIntellijCommand, exportIntellijPackageCommand, exportEclipseCommand, exportVSCodeExtensionCommand } from "../cli/export";
 import { logger } from "../utils/logger";
 
 const packageJson = JSON.parse(
@@ -20,7 +20,7 @@ const program = new Command();
 
 program
   .name("themebooth")
-  .description("Create syntax themes once, publish to VS Code, Notepad++, and Zed")
+  .description("Create syntax themes once, publish to VS Code, JetBrains, Eclipse, Notepad++, Zed, and more")
   .version(packageJson.version, "-v, --version");
 
 program
@@ -158,29 +158,36 @@ Examples:
 
 program
   .command("export <platform>")
-  .description("Export theme to specific platform (sublime, vscode, zed, notepad++, intellij)")
+  .description("Export theme to specific platform (sublime, vscode, zed, notepad++, intellij, eclipse, vscode-extension)")
   .option("-o, --output <path>", "Output directory for exported files")
   .addHelpText("after", `
 Export theme to single platform in a custom output directory.
 Useful for testing individual platform exports before packaging.
 
 Platforms:
-  sublime      - Sublime Text color scheme
-  vscode       - VS Code theme
-  zed          - Zed editor theme
-  notepad++    - Notepad++ syntax highlighting
-  intellij     - JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, Rider)
+  sublime             - Sublime Text color scheme
+  vscode              - VS Code theme
+  zed                 - Zed editor theme
+  notepad++           - Notepad++ syntax highlighting
+  intellij            - JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, Rider)
+  eclipse             - Eclipse IDE color theme
+  vscode-extension    - VS Code extension scaffold (publishable extension)
 
 Examples:
   $ themebooth export sublime
-  $ themebooth export sublime -o ./my-sublime-export
   $ themebooth export vscode
   $ themebooth export intellij
+  $ themebooth export eclipse
+  $ themebooth export vscode-extension
   `)
   .action(async (platform, options) => {
     try {
       if (platform.toLowerCase() === "intellij") {
         await exportIntellijCommand(options);
+      } else if (platform.toLowerCase() === "eclipse") {
+        await exportEclipseCommand(options);
+      } else if (platform.toLowerCase() === "vscode-extension") {
+        await exportVSCodeExtensionCommand(options);
       } else {
         await exportCommand(platform, options);
       }
