@@ -37,8 +37,8 @@ export class PreviewServer {
 
     this.app.get("/", async (_req, res) => {
       try {
-        const manifestExists_ = await manifestExists(this.options.manifestPath);
-        if (!manifestExists_) {
+        const hasManifest = await manifestExists(this.options.manifestPath);
+        if (!hasManifest) {
           res.status(404).send("manifest.json not found");
           return;
         }

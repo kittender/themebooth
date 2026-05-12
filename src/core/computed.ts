@@ -1,5 +1,6 @@
 import Color from "color";
 import { ComputedEntry } from "./manifest";
+import { HEX_COLOR_REGEX_STRICT } from "../utils/validation";
 
 export function applyColorTransform(
   hexColor: string,
@@ -51,7 +52,7 @@ export function resolveComputedColors(
       // Treat as literal hex color
       baseColor = entry.base;
       // Validate it's a valid hex
-      if (!/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$/.test(baseColor)) {
+      if (!HEX_COLOR_REGEX_STRICT.test(baseColor)) {
         throw new Error(
           `Computed color "${computedName}" has invalid base value "${entry.base}" (not a variable or hex color)`
         );

@@ -3,6 +3,9 @@ import * as path from "path";
 import { Manifest, validateManifest } from "../core/manifest";
 import { resolveVariables, validateVariableReferences } from "../core/variables";
 
+export const HEX_COLOR_REGEX = /^#([0-9a-f]{6}|[0-9a-f]{3}|[0-9a-f]{8}|[0-9a-f]{4})$/i;
+export const HEX_COLOR_REGEX_STRICT = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$/;
+
 export interface ValidationResult {
   isValid: boolean;
   manifest?: Manifest;

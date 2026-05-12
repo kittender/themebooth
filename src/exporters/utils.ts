@@ -2,9 +2,16 @@ import { Manifest } from "../core/manifest";
 import { EditorOverlay } from "../core/overlay";
 import { extractTokenSettings } from "../core/schemas";
 
+export interface TokenSettings {
+  foreground?: string;
+  background?: string;
+  fontStyle?: string;
+  [key: string]: string | undefined;
+}
+
 export interface TokenRule {
   scope: string;
-  settings: Record<string, any>;
+  settings: TokenSettings;
 }
 
 export function mergeTokenOverrides(
@@ -19,7 +26,7 @@ export function mergeTokenOverrides(
     if (Object.keys(extracted).length > 0) {
       rules.push({
         scope,
-        settings: extracted,
+        settings: extracted as TokenSettings,
       });
     }
   }
@@ -28,14 +35,14 @@ export function mergeTokenOverrides(
   if (overlay?.tokenOverrides) {
     for (const [scope, overrides] of Object.entries(overlay.tokenOverrides)) {
       const existingRule = rules.find((r) => r.scope === scope);
-      const extracted = extractTokenSettings(overrides as any);
+      const extracted = extractTokenSettings(overrides as Record<string, unknown>);
 
       if (existingRule && Object.keys(extracted).length > 0) {
-        existingRule.settings = { ...existingRule.settings, ...extracted };
+        existingRule.settings = { ...existingRule.settings, ...(extracted as TokenSettings) };
       } else if (Object.keys(extracted).length > 0) {
         rules.push({
           scope,
-          settings: extracted,
+          settings: extracted as TokenSettings,
         });
       }
     }

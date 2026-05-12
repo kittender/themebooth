@@ -1,4 +1,5 @@
 // CSS color parsing and normalization to hex format
+import { HEX_COLOR_REGEX } from "../utils/validation";
 
 const namedColors: Record<string, string> = {
   red: "#ff0000",
@@ -58,37 +59,37 @@ function hslToHex(h: number, s: number, l: number): string {
   s = Math.max(0, Math.min(100, s)) / 100;
   l = Math.max(0, Math.min(100, l)) / 100;
 
-  const c = (1 - Math.abs(2 * l - 1)) * s;
-  const hPrime = h / 60;
-  const x = c * (1 - Math.abs((hPrime % 2) - 1));
+  const chroma = (1 - Math.abs(2 * l - 1)) * s;
+  const huePrime = h / 60;
+  const intermediate = chroma * (1 - Math.abs((huePrime % 2) - 1));
   let r = 0,
     g = 0,
     b = 0;
 
-  if (hPrime >= 0 && hPrime <= 1) {
-    r = c;
-    g = x;
-  } else if (hPrime > 1 && hPrime <= 2) {
-    r = x;
-    g = c;
-  } else if (hPrime > 2 && hPrime <= 3) {
-    g = c;
-    b = x;
-  } else if (hPrime > 3 && hPrime <= 4) {
-    g = x;
-    b = c;
-  } else if (hPrime > 4 && hPrime <= 5) {
-    r = x;
-    b = c;
-  } else if (hPrime > 5 && hPrime <= 6) {
-    r = c;
-    b = x;
+  if (huePrime >= 0 && huePrime <= 1) {
+    r = chroma;
+    g = intermediate;
+  } else if (huePrime > 1 && huePrime <= 2) {
+    r = intermediate;
+    g = chroma;
+  } else if (huePrime > 2 && huePrime <= 3) {
+    g = chroma;
+    b = intermediate;
+  } else if (huePrime > 3 && huePrime <= 4) {
+    g = intermediate;
+    b = chroma;
+  } else if (huePrime > 4 && huePrime <= 5) {
+    r = intermediate;
+    b = chroma;
+  } else if (huePrime > 5 && huePrime <= 6) {
+    r = chroma;
+    b = intermediate;
   }
 
-  const m = l - c / 2;
-  r = Math.round((r + m) * 255);
-  g = Math.round((g + m) * 255);
-  b = Math.round((b + m) * 255);
+  const lightnessPrime = l - chroma / 2;
+  r = Math.round((r + lightnessPrime) * 255);
+  g = Math.round((g + lightnessPrime) * 255);
+  b = Math.round((b + lightnessPrime) * 255);
 
   return rgbToHex(r, g, b);
 }
@@ -105,7 +106,7 @@ export function parseAndNormalizeColor(input: string): ColorParseResult | null {
   const trimmed = input.trim();
 
   // Already hex?
-  if (/^#([0-9a-f]{6}|[0-9a-f]{3}|[0-9a-f]{8}|[0-9a-f]{4})$/i.test(trimmed)) {
+  if (HEX_COLOR_REGEX.test(trimmed)) {
     // Expand short hex if needed
     let normalized = trimmed.toLowerCase();
     if (normalized.length === 4) {
