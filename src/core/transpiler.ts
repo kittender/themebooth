@@ -13,6 +13,7 @@ import { exportBrackets } from "../exporters/brackets";
 import { exportSublime } from "../exporters/sublime";
 import { exportVim } from "../exporters/vim";
 import { exportAtom } from "../exporters/atom";
+import { exportHighlightJs } from "../exporters/highlight-js";
 import { logger } from "../utils/logger";
 
 export interface TranspilationResult {
@@ -265,6 +266,24 @@ export async function transpileTheme(
     results.push({
       success: false,
       platform: "Atom",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
+  // Export to Highlight.js
+  try {
+    const highlightJsTheme = exportHighlightJs(interpolated);
+    const highlightJsOutputPath = path.join(outputDir, `${manifest.name}-highlightjs.json`);
+    await fs.writeFile(highlightJsOutputPath, JSON.stringify(highlightJsTheme, null, 2), "utf-8");
+    results.push({
+      success: true,
+      platform: "Highlight.js",
+      path: highlightJsOutputPath,
+    });
+  } catch (error) {
+    results.push({
+      success: false,
+      platform: "Highlight.js",
       error: error instanceof Error ? error.message : String(error),
     });
   }

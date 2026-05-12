@@ -5,6 +5,7 @@ import { exportBrackets } from "../brackets";
 import { exportSublime } from "../sublime";
 import { exportVim } from "../vim";
 import { exportAtom } from "../atom";
+import { exportHighlightJs } from "../highlight-js";
 import { Manifest } from "../../core/manifest";
 import { EditorOverlay } from "../../core/overlay";
 
@@ -734,6 +735,160 @@ describe("Atom Exporter", () => {
   });
 });
 
+describe("Highlight.js Exporter", () => {
+  it("should export basic theme structure", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+        "editor.foreground": "#d4d4d4",
+      },
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+        },
+      },
+    });
+
+    const result = exportHighlightJs(manifest);
+
+    expect(result["hljs"]).toBe("#d4d4d4");
+    expect(result["hljs-background"]).toBe("#1e1e1e");
+    expect(result["hljs-keyword"]).toBe("#569cd6");
+  });
+
+  it("should map common token scopes to Highlight.js classes", () => {
+    const manifest = createManifest({
+      tokens: {
+        "string": {
+          foreground: "#ce9178",
+        },
+        "comment": {
+          foreground: "#6a9955",
+        },
+        "number": {
+          foreground: "#b5cea8",
+        },
+        "variable.builtin": {
+          foreground: "#9cdcfe",
+        },
+      },
+    });
+
+    const result = exportHighlightJs(manifest);
+
+    expect(result["hljs-string"]).toBe("#ce9178");
+    expect(result["hljs-comment"]).toBe("#6a9955");
+    expect(result["hljs-number"]).toBe("#b5cea8");
+    expect(result["hljs-built_in"]).toBe("#9cdcfe");
+  });
+
+  it("should map complex scopes with prefixes", () => {
+    const manifest = createManifest({
+      tokens: {
+        "entity.name.function": {
+          foreground: "#dcdcaa",
+        },
+        "punctuation.definition.string": {
+          foreground: "#ce9178",
+        },
+      },
+    });
+
+    const result = exportHighlightJs(manifest);
+
+    expect(result["hljs-title"]).toBe("#dcdcaa");
+    expect(result["hljs-function"]).toBe("#dcdcaa");
+    expect(result["hljs-string"]).toBe("#ce9178");
+  });
+
+  it("should use fallback category mapping for unknown scopes", () => {
+    const manifest = createManifest({
+      tokens: {
+        "constant.something": {
+          foreground: "#4ec9b0",
+        },
+      },
+    });
+
+    const result = exportHighlightJs(manifest);
+
+    expect(result["hljs-literal"]).toBe("#4ec9b0");
+  });
+
+  it("should assign default class for unmatched scopes", () => {
+    const manifest = createManifest({
+      tokens: {
+        "unknown.scope": {
+          foreground: "#aabbcc",
+        },
+      },
+    });
+
+    const result = exportHighlightJs(manifest);
+
+    expect(result["hljs-attr"]).toBe("#aabbcc");
+  });
+
+  it("should handle empty manifest", () => {
+    const manifest = createManifest({});
+
+    const result = exportHighlightJs(manifest);
+
+    expect(result["hljs"]).toBeDefined();
+    expect(result["hljs-background"]).toBeDefined();
+  });
+
+  it("should export valid JSON", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+        "editor.foreground": "#d4d4d4",
+      },
+      tokens: {
+        keyword: {
+          foreground: "#569cd6",
+        },
+        string: {
+          foreground: "#ce9178",
+        },
+      },
+    });
+
+    const result = exportHighlightJs(manifest);
+    const json = JSON.stringify(result);
+
+    expect(() => JSON.parse(json)).not.toThrow();
+    expect(json).toContain("hljs");
+    expect(json).toContain("#569cd6");
+  });
+
+  it("should use default foreground when no editor.foreground color", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.background": "#1e1e1e",
+      },
+    });
+
+    const result = exportHighlightJs(manifest);
+
+    expect(result["hljs"]).toBe("#000000");
+    expect(result["hljs-background"]).toBe("#1e1e1e");
+  });
+
+  it("should use default background when no editor.background color", () => {
+    const manifest = createManifest({
+      colors: {
+        "editor.foreground": "#d4d4d4",
+      },
+    });
+
+    const result = exportHighlightJs(manifest);
+
+    expect(result["hljs"]).toBe("#d4d4d4");
+    expect(result["hljs-background"]).toBe("#ffffff");
+  });
+});
+
 describe("Exporter Integration", () => {
   it("should handle a complete manifest across all platforms", () => {
     const manifest = createManifest({
@@ -771,6 +926,7 @@ describe("Exporter Integration", () => {
     const sublime = exportSublime(manifest, overlay);
     const vim = exportVim(manifest, overlay);
     const atom = exportAtom(manifest, overlay);
+    const highlightJs = exportHighlightJs(manifest);
 
     // All should successfully generate
     expect(vscode.name).toBe("Complete Theme");
@@ -779,12 +935,14 @@ describe("Exporter Integration", () => {
     expect(sublime.name).toBe("Complete Theme");
     expect(vim).toContain("Complete Theme");
     expect(atom.name).toBe("Complete Theme");
+    expect(highlightJs["hljs"]).toBeDefined();
 
     // All should be serializable
     expect(() => JSON.stringify(vscode)).not.toThrow();
     expect(() => JSON.stringify(zed)).not.toThrow();
     expect(() => JSON.stringify(sublime)).not.toThrow();
     expect(() => JSON.stringify(atom)).not.toThrow();
+    expect(() => JSON.stringify(highlightJs)).not.toThrow();
     expect(() => vim).not.toThrow();
   });
 });
