@@ -13,6 +13,8 @@ manifest.example.json
 # Source code
 src/
 test.js
+test_shutdown.js
+test_sigint.js
 *.test.ts
 *.test.js
 index.js

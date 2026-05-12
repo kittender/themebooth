@@ -117,7 +117,26 @@ export class PreviewServer {
       ws.on("error", (error: Error) => {
         logger.debug(`WebSocket error: ${error.message}`);
       });
+      ws.on("close", () => {
+        logger.debug("WebSocket client disconnected");
+        this.checkClientStatus();
+      });
     });
+  }
+
+  private checkClientStatus(): void {
+    if (!this.wss) return;
+
+    const activeClients = Array.from(this.wss.clients).filter(
+      (client: WSSocket) => client.readyState === WSSocket.OPEN
+    );
+
+    if (activeClients.length === 0) {
+      logger.info("\nBrowser closed. Shutting down preview server...");
+      this.stop().then(() => {
+        process.exit(0);
+      });
+    }
   }
 
   async start(): Promise<number> {
@@ -160,25 +179,35 @@ export class PreviewServer {
   }
 
   async stop(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.watcher.close();
 
-      if (this.wss) {
-        this.wss.close(() => {
-          if (this.server) {
-            this.server.close(() => {
-              resolve();
-            });
-          } else {
-            resolve();
-          }
-        });
-      } else if (this.server) {
-        this.server.close(() => {
+      let closed = false;
+      const timeout = setTimeout(() => {
+        if (!closed) {
+          closed = true;
           resolve();
-        });
-      } else {
-        resolve();
+        }
+      }, 2000);
+
+      const cleanup = () => {
+        if (!closed) {
+          closed = true;
+          clearTimeout(timeout);
+          resolve();
+        }
+      };
+
+      if (this.wss) {
+        this.wss.close(cleanup);
+      }
+
+      if (this.server) {
+        this.server.close(cleanup);
+      }
+
+      if (!this.wss && !this.server) {
+        cleanup();
       }
     });
   }
