@@ -10,10 +10,11 @@ import { exportVSCode } from "../exporters/vscode";
 import { exportNotepadPlus } from "../exporters/notepad-plus";
 import { exportZed } from "../exporters/zed";
 import { exportBrackets } from "../exporters/brackets";
-import { exportSublime } from "../exporters/sublime";
+import { exportSublime, exportSublimeMultiFile } from "../exporters/sublime";
 import { exportVim } from "../exporters/vim";
 import { exportAtom } from "../exporters/atom";
 import { exportHighlightJs } from "../exporters/highlight-js";
+import { exportIntelliJ, serializeIclsXml, generatePluginXml, buildPluginMetadata } from "../exporters/jetbrains";
 import { logger } from "../utils/logger";
 
 export interface TranspilationResult {
@@ -117,6 +118,7 @@ export async function transpileTheme(
   const sublimeOverlay = loadOverlay(path.join(manifestDir, "sublime.json"));
   const vimOverlay = loadOverlay(path.join(manifestDir, "vim.json"));
   const atomOverlay = loadOverlay(path.join(manifestDir, "atom.json"));
+  const jetbrainsOverlay = loadOverlay(path.join(manifestDir, "jetbrains.json"));
 
   // Resolve variables in overlays (using extended variables that include computed colors)
   const resolvedVsCodeOverlay = vsCodeOverlay ? resolveOverlayVariables(vsCodeOverlay, extendedVariables) : null;
@@ -124,6 +126,7 @@ export async function transpileTheme(
   const resolvedSublimeOverlay = sublimeOverlay ? resolveOverlayVariables(sublimeOverlay, extendedVariables) : null;
   const resolvedVimOverlay = vimOverlay ? resolveOverlayVariables(vimOverlay, extendedVariables) : null;
   const resolvedAtomOverlay = atomOverlay ? resolveOverlayVariables(atomOverlay, extendedVariables) : null;
+  const resolvedJetbrainsOverlay = jetbrainsOverlay ? resolveOverlayVariables(jetbrainsOverlay, extendedVariables) : null;
 
   // Create output directory
   await fs.mkdir(outputDir, { recursive: true });
@@ -207,18 +210,29 @@ export async function transpileTheme(
     }
   }
 
-  // Export to Sublime
+  // Export to Sublime (multi-file: color-scheme, ui-theme, metadata)
   try {
     const sublimeManifest = resolvedSublimeOverlay
       ? mergeOverlayIntoManifest(interpolated, resolvedSublimeOverlay)
       : interpolated;
-    const sublimeTheme = exportSublime(sublimeManifest, resolvedSublimeOverlay || { inherits: "" });
-    const sublimeOutputPath = path.join(outputDir, `${manifest.name}.sublime-color-scheme.json`);
-    await fs.writeFile(sublimeOutputPath, JSON.stringify(sublimeTheme, null, 2), "utf-8");
+    const sublimeExport = exportSublimeMultiFile(sublimeManifest, resolvedSublimeOverlay || { inherits: "" });
+
+    // Export color scheme
+    const colorSchemeOutputPath = path.join(outputDir, `${manifest.name}.sublime-color-scheme.json`);
+    await fs.writeFile(colorSchemeOutputPath, JSON.stringify(sublimeExport.colorScheme, null, 2), "utf-8");
+
+    // Export UI theme
+    const uiThemeOutputPath = path.join(outputDir, `${manifest.name}.sublime-theme.json`);
+    await fs.writeFile(uiThemeOutputPath, JSON.stringify(sublimeExport.uiTheme, null, 2), "utf-8");
+
+    // Export metadata
+    const metadataOutputPath = path.join(outputDir, "metadata.json");
+    await fs.writeFile(metadataOutputPath, JSON.stringify(sublimeExport.metadata, null, 2), "utf-8");
+
     results.push({
       success: true,
       platform: "Sublime Text",
-      path: sublimeOutputPath,
+      path: colorSchemeOutputPath,
     });
   } catch (error) {
     results.push({
@@ -284,6 +298,39 @@ export async function transpileTheme(
     results.push({
       success: false,
       platform: "Highlight.js",
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
+  // Export to JetBrains IDEs (IntelliJ IDEA, PyCharm, etc.)
+  try {
+    const jetbrainsManifest = resolvedJetbrainsOverlay
+      ? mergeOverlayIntoManifest(interpolated, resolvedJetbrainsOverlay)
+      : interpolated;
+    const jetbrainsColorScheme = exportIntelliJ(jetbrainsManifest, resolvedJetbrainsOverlay || null);
+    const iclsXml = serializeIclsXml(jetbrainsColorScheme);
+
+    const pluginMetadata = buildPluginMetadata(manifest);
+    const themeFileName = `${manifest.name}.icls`;
+    const pluginXml = generatePluginXml(pluginMetadata, themeFileName);
+
+    // Write .icls file
+    const iclsOutputPath = path.join(outputDir, themeFileName);
+    await fs.writeFile(iclsOutputPath, iclsXml, "utf-8");
+
+    // Write plugin.xml
+    const pluginXmlPath = path.join(outputDir, "plugin.xml");
+    await fs.writeFile(pluginXmlPath, pluginXml, "utf-8");
+
+    results.push({
+      success: true,
+      platform: "JetBrains",
+      path: iclsOutputPath,
+    });
+  } catch (error) {
+    results.push({
+      success: false,
+      platform: "JetBrains",
       error: error instanceof Error ? error.message : String(error),
     });
   }

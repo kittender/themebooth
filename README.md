@@ -1,6 +1,6 @@
 # Theme Booth
 
-Create beautiful syntax highlighting themes for VS Code, Notepad++, and Zed—without learning three different config formats. Write once, publish everywhere.
+Create beautiful syntax highlighting themes for VS Code, Sublime Text, Notepad++, Zed, and JetBrains IDEs—without learning multiple config formats. Write once, publish everywhere.
 
 ## Install
 
@@ -70,13 +70,28 @@ Opens `preview.html` in your browser. Edit `manifest.json`, and the preview relo
 themebooth package
 ```
 
-Generates `ocean-dream/` with ready-to-publish formats for all 3 platforms.
+Generates `ocean-dream/` with ready-to-publish formats for all platforms.
 
-### 5. Publish to marketplaces
+### 5. Export to additional platforms
+
+**JetBrains IDEs** (IntelliJ IDEA, PyCharm, WebStorm, Rider, etc.):
+```bash
+themebooth export intellij
+themebooth export-intellij-package
+```
+
+See [JetBrains Export Guide](docs/jetbrains-export.md) for setup.
+
+### 6. Publish to marketplaces
 
 **VS Code:**  
 ```bash
 themebooth publish vscode
+```
+
+**Sublime Text:**  
+```bash
+themebooth publish sublime
 ```
 
 **Notepad++:**  
@@ -89,11 +104,14 @@ themebooth publish notepad++
 themebooth publish zed
 ```
 
+**JetBrains:**  
+See [Marketplace Submission Guide](docs/jetbrains-marketplace.md)
+
 Each command guides you through marketplace login and submission.
 
 ## What v1 supports
 
-- **3 editors**: VS Code, Notepad++, Zed
+- **4 editors**: VS Code, Sublime Text, Notepad++, Zed
 - **Single JSON theme definition** (no per-editor config files in v1)
 - **Color variables** (`$colorName`) for DRY theming—define once, reuse everywhere
 - **Computed colors** (darken, lighten, alpha transforms)—derive colors from variables at build time
@@ -110,6 +128,7 @@ Each command guides you through marketplace login and submission.
 1. Write a single `manifest.json` with your colors and token rules
 2. Theme Booth transpiles it into each editor's native format:
    - VS Code → `.json` theme file
+   - Sublime Text → `.sublime-color-scheme.json` + `.sublime-theme.json`
    - Notepad++ → `.xml` style definition
    - Zed → `.json` theme file
 3. Publish directly from CLI using your marketplace credentials
@@ -118,6 +137,7 @@ Each command guides you through marketplace login and submission.
 
 - **[Manifest Schema](MANIFEST_SCHEMA.md)** — Complete reference for `manifest.json`
 - **[CLI Commands](CLI_HELP.md)** — Detailed help for each command
+- **[Sublime Text Guide](docs/SUBLIME_GUIDE.md)** — Export, package, and publish to Sublime Text
 - **[Troubleshooting](TROUBLESHOOTING.md)** — Solutions for common issues
 - **[Contributing](CONTRIBUTING.md)** — How to contribute to Theme Booth
 
@@ -170,6 +190,8 @@ Changes to `manifest.json` reload automatically.
 | `themebooth preview` | Live preview with hot-reload |
 | `themebooth validate` | Validate manifest.json |
 | `themebooth preset add` | Interactive wizard to create theme variants |
+| `themebooth export <platform>` | Export to single platform |
+| `themebooth export-sublime-package` | Create Sublime package for Package Control |
 | `themebooth package` | Package for all platforms |
 | `themebooth publish <platform>` | Publish to marketplace |
 
@@ -177,9 +199,11 @@ See `themebooth --help` or `themebooth <command> --help` for detailed options.
 
 ## Next: Future versions
 
-**v2** adds Sublime Text, IntelliJ IDEA, and PyCharm with multi-file support and language-specific overrides.
+**v2** adds IntelliJ IDEA and PyCharm with multi-file support and language-specific overrides.
 
 **v3** brings Eclipse and Visual Studio with advanced plugin structures.
+
+See [Sublime Text Guide](docs/SUBLIME_GUIDE.md) for advanced Sublime features (color schemes, UI themes, Package Control publishing).
 
 ---
 

@@ -7,6 +7,7 @@ import { validateManifestComprehensive } from "../utils/validation";
 import { handleVSCodePublish } from "../publish/vscode";
 import { handleZedPublish } from "../publish/zed";
 import { handleNotepadPublish } from "../publish/notepad-plus";
+import { handleSublimePublish } from "../publish/sublime";
 
 export async function publishCommand(platform?: string): Promise<void> {
   try {
@@ -68,6 +69,8 @@ export async function publishCommand(platform?: string): Promise<void> {
       await handleNotepadPublish(packageDir, manifest.name, manifest);
     } else if (platformLower === "zed") {
       await handleZedPublish(packageDir, manifest.name, manifest);
+    } else if (platformLower === "sublime") {
+      await handleSublimePublish(packageDir, manifest.name);
     } else {
       if (!platform) {
         logger.error("Platform required");
@@ -77,6 +80,7 @@ export async function publishCommand(platform?: string): Promise<void> {
       logger.info("");
       logger.info("Available platforms:");
       logger.info("  • vscode      - VS Code Marketplace");
+      logger.info("  • sublime     - Sublime Text Package Control");
       logger.info("  • notepad++   - Notepad++ Package Control");
       logger.info("  • zed         - Zed Registry");
       logger.info("");

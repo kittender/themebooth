@@ -234,6 +234,114 @@ export async function validateNotepadPlusPlusXML(filePath: string): Promise<{ is
 }
 
 /**
+ * Validate JetBrains .icls color scheme XML
+ */
+export async function validateJetBrainsIclsXML(filePath: string): Promise<{ isValid: boolean; error?: string }> {
+  try {
+    const content = await fs.readFile(filePath, "utf-8");
+
+    // Check XML declaration
+    if (!content.includes("<?xml")) {
+      return { isValid: false, error: "Missing XML declaration" };
+    }
+
+    // Check for required scheme element
+    if (!content.includes("<scheme") || !content.includes("</scheme>")) {
+      return { isValid: false, error: "Missing <scheme> root element" };
+    }
+
+    // Check for attributes section
+    if (!content.includes("<attributes>") || !content.includes("</attributes>")) {
+      return { isValid: false, error: "Missing <attributes> section" };
+    }
+
+    // Basic bracket matching
+    let bracketDepth = 0;
+    for (const char of content) {
+      if (char === "<") bracketDepth++;
+      if (char === ">") bracketDepth--;
+      if (bracketDepth < 0) {
+        return { isValid: false, error: "Mismatched XML brackets" };
+      }
+    }
+
+    if (bracketDepth !== 0) {
+      return { isValid: false, error: "Unclosed XML tags" };
+    }
+
+    return { isValid: true };
+  } catch (error) {
+    return {
+      isValid: false,
+      error: `Failed to validate JetBrains .icls file: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
+
+/**
+ * Validate JetBrains plugin.xml metadata file
+ */
+export async function validateJetBrainsPluginXML(filePath: string): Promise<{ isValid: boolean; error?: string; warnings?: string[] }> {
+  try {
+    const content = await fs.readFile(filePath, "utf-8");
+    const warnings: string[] = [];
+
+    // Check XML declaration
+    if (!content.includes("<?xml")) {
+      return { isValid: false, error: "Missing XML declaration" };
+    }
+
+    // Check for idea-plugin element
+    if (!content.includes("<idea-plugin>") || !content.includes("</idea-plugin>")) {
+      return { isValid: false, error: "Missing <idea-plugin> root element" };
+    }
+
+    // Check required metadata
+    const requiredElements = ["<id>", "<name>", "<version>", "<vendor>", "<idea-version"];
+    for (const element of requiredElements) {
+      if (!content.includes(element)) {
+        return { isValid: false, error: `Missing required element: ${element}` };
+      }
+    }
+
+    // Check for theme provider
+    if (!content.includes("<themeProvider")) {
+      warnings.push("No <themeProvider> extension found - theme may not be registered");
+    }
+
+    // Check version format (should be semver-like)
+    const versionMatch = content.match(/<version>([^<]+)<\/version>/);
+    if (versionMatch) {
+      const version = versionMatch[1];
+      if (!/^\d+\.\d+\.\d+/.test(version)) {
+        warnings.push(`Version "${version}" should follow semver format (e.g., 1.0.0)`);
+      }
+    }
+
+    // Basic bracket matching
+    let bracketDepth = 0;
+    for (const char of content) {
+      if (char === "<") bracketDepth++;
+      if (char === ">") bracketDepth--;
+      if (bracketDepth < 0) {
+        return { isValid: false, error: "Mismatched XML brackets" };
+      }
+    }
+
+    if (bracketDepth !== 0) {
+      return { isValid: false, error: "Unclosed XML tags" };
+    }
+
+    return { isValid: true, warnings: warnings.length > 0 ? warnings : undefined };
+  } catch (error) {
+    return {
+      isValid: false,
+      error: `Failed to validate JetBrains plugin.xml: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
+
+/**
  * Check if directory already exists and provide guidance
  */
 export async function checkDirectoryExists(dirPath: string): Promise<{ exists: boolean; isEmpty: boolean }> {

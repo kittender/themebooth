@@ -443,11 +443,14 @@ themebooth package      # Packages all platforms
 
 ```
 .themebooth/output/my-theme/
-├── theme.json              # VS Code theme
-├── theme-zed.json          # Zed theme
-├── theme.xml               # Notepad++ theme
-├── manifest.json           # Original (reference)
-└── PUBLISH.md             # Publishing instructions
+├── theme.json                        # VS Code theme
+├── my-theme.sublime-color-scheme.json # Sublime color scheme
+├── my-theme.sublime-theme.json       # Sublime UI theme
+├── theme-zed.json                    # Zed theme
+├── theme.xml                         # Notepad++ theme
+├── metadata.json                     # Theme metadata
+├── manifest.json                     # Original (reference)
+└── PUBLISH.md                        # Publishing instructions
 ```
 
 ### Examples
@@ -493,6 +496,165 @@ Solution: Check error message and fix manifest.json
 
 ---
 
+## `themebooth export <platform>`
+
+Export theme to a specific platform without packaging all.
+
+### Usage
+
+```bash
+themebooth export sublime                    # Export Sublime files
+themebooth export sublime -o ./my-export     # Custom output directory
+themebooth export vscode                     # Export VS Code theme
+```
+
+### Options
+
+| Option | Short | Type | Default | Description |
+|--------|-------|------|---------|-------------|
+| `--output` | `-o` | string | `./.themebooth/output/{theme}-{platform}` | Output directory |
+
+### Behavior
+
+1. Validates `manifest.json`
+2. Transpiles to specified platform only
+3. Writes files to output directory
+4. Shows platform-specific guidance
+
+### Supported Platforms
+
+| Platform | Extension(s) | Use Case |
+|----------|-------------|----------|
+| `sublime` | `.sublime-color-scheme.json`, `.sublime-theme.json` | Test Sublime output before Package Control |
+| `vscode` | `.json` | Test VS Code output before publishing |
+| `notepad++` | `.xml` | Test Notepad++ output before publishing |
+| `zed` | `.json` | Test Zed output before publishing |
+
+### Sublime Export Output
+
+```
+my-export/
+├── my-theme.sublime-color-scheme.json  # Syntax highlighting colors and scopes
+├── my-theme.sublime-theme.json         # UI theme (buttons, panels, sidebar)
+└── metadata.json                       # Theme metadata
+```
+
+### Examples
+
+```bash
+# Test Sublime export before packaging
+$ themebooth export sublime
+✅ Theme exported to ./.themebooth/output/my-theme-sublime/
+
+Sublime Text files generated:
+  • my-theme.sublime-color-scheme.json - Color and syntax highlighting
+  • my-theme.sublime-theme.json - UI theme (buttons, panels, etc.)
+  • metadata.json - Theme metadata
+
+Next steps:
+  1. Package for Sublime: themebooth export sublime --package
+  2. Submit to Package Control: https://packagecontrol.io/docs/submit
+
+# Export to custom directory
+$ themebooth export sublime -o ~/test-theme
+✅ Theme exported to ~/test-theme/
+```
+
+---
+
+## `themebooth export-sublime-package`
+
+Create complete Sublime Text package structure for Package Control submission.
+
+### Usage
+
+```bash
+themebooth export-sublime-package                           # Default package name
+themebooth export-sublime-package -n my-awesome-theme      # Custom name
+themebooth export-sublime-package --url https://github.com/user/repo  # With repo URL
+themebooth export-sublime-package --dev                     # Development mode
+```
+
+### Options
+
+| Option | Short | Type | Default | Description |
+|--------|-------|------|---------|-------------|
+| `--name` | `-n` | string | `sublime-{theme-name}` | Package name |
+| `--output` | `-o` | string | `./.themebooth/{package-name}` | Output directory |
+| `--url` | | string | | GitHub repository URL |
+| `--homepage` | | string | | Theme homepage URL |
+| `--dev` | | flag | false | Create development package (adds `.no-sublime-package`) |
+
+### Behavior
+
+1. Validates `manifest.json`
+2. Transpiles to Sublime formats
+3. Creates package directory structure
+4. Generates `packages.json` for Package Control
+5. Optionally creates `.no-sublime-package` for development
+
+### Output Structure
+
+```
+my-awesome-theme/
+├── color-schemes/
+│   └── my-theme.sublime-color-scheme.json
+├── themes/
+│   └── my-theme.sublime-theme.json
+├── packages.json                      # Package Control registry entry
+└── .no-sublime-package               # (Optional, for development)
+```
+
+### Examples
+
+```bash
+# Create package with repository URL for Package Control
+$ themebooth export-sublime-package \
+  -n my-awesome-theme \
+  --url https://github.com/user/my-awesome-theme
+
+✅ Sublime package created: ./.themebooth/my-awesome-theme
+
+Package structure:
+  color-schemes/
+    └── my-theme.sublime-color-scheme.json
+  themes/
+    └── my-theme.sublime-theme.json
+  packages.json
+
+Next: Submit to Package Control at https://packagecontrol.io/docs/submit
+
+# Create development package for local testing
+$ themebooth export-sublime-package --dev
+✅ Created .no-sublime-package (development mode)
+
+# Then symlink to Sublime's package directory:
+$ ln -s ./my-awesome-theme ~/Library/Application\ Support/Sublime\ Text/Packages/
+```
+
+### Package Control Submission
+
+After generating package:
+
+1. **Create GitHub release:**
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+2. **Upload theme files to release** (optional, files are in repo)
+
+3. **Fork Package Control channel:**
+   - https://github.com/wbond/package_control_channel
+
+4. **Add entry to `repository.json`**
+
+5. **Create pull request** with release information
+
+See [Sublime Text Guide](docs/SUBLIME_GUIDE.md) for detailed publishing walkthrough.
+
+---
+
 ## `themebooth publish [platform]`
 
 Publish theme to marketplace with interactive guidance.
@@ -501,6 +663,7 @@ Publish theme to marketplace with interactive guidance.
 
 ```bash
 themebooth publish vscode       # Publish to VS Code Marketplace
+themebooth publish sublime      # Publish to Sublime Text Package Control
 themebooth publish notepad++    # Publish to Notepad++ Plugin Manager
 themebooth publish zed          # Publish to Zed Theme Registry
 ```
@@ -510,6 +673,7 @@ themebooth publish zed          # Publish to Zed Theme Registry
 | Platform | Marketplace | Flow | Status |
 |----------|-------------|------|--------|
 | `vscode` | VS Code Marketplace | Interactive | v1 ✅ |
+| `sublime` | Sublime Text Package Control | Interactive Guide | v1 ✅ |
 | `notepad++` | Notepad++ Plugin Manager | Manual | v1 ✅ |
 | `zed` | Zed Theme Registry | Interactive | v1 ✅ |
 
@@ -537,6 +701,49 @@ $ themebooth publish vscode
 ✅ Published: "My Theme" v1.0.0
 🔗 View at: https://marketplace.visualstudio.com/items?itemName=...
 ```
+
+### Sublime Text Publishing
+
+**Requirements:**
+- Packaged output (run `themebooth package` first)
+- GitHub repository with theme files
+- GitHub release with version tag
+
+**Flow:**
+1. Run: `themebooth package`
+2. Create GitHub release with version tag
+3. Run: `themebooth publish sublime`
+4. Interactive prompts for repository URL
+5. Generates Package Control `repository.json` entry
+6. Saves entry to file for PR submission
+
+**Example:**
+```bash
+$ cd my-theme
+$ themebooth package
+$ git tag v1.0.0
+$ git push origin v1.0.0
+$ themebooth publish sublime
+GitHub repository URL: https://github.com/user/my-theme
+
+📋 Package Control Entry (add to repository.json):
+{
+  "name": "My Theme",
+  "description": "A beautiful color scheme",
+  "author": "Your Name",
+  "homepage": "https://github.com/user/my-theme",
+  ...
+}
+
+✅ Entry saved to: my-theme-package-control.json
+
+📚 Next Steps:
+  1. Fork: https://github.com/wbond/package_control_channel
+  2. Add entry to repository.json
+  3. Create pull request
+```
+
+See [Sublime Text Guide](docs/SUBLIME_GUIDE.md) for detailed instructions.
 
 ### Notepad++ Publishing
 

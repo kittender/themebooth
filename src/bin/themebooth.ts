@@ -9,6 +9,7 @@ import { packageCommand } from "../cli/package";
 import { publishCommand } from "../cli/publish";
 import { presetAddCommand } from "../cli/preset";
 import { validateCommand } from "../cli/validate";
+import { exportCommand, exportSublimePackageCommand, exportIntellijCommand, exportIntellijPackageCommand } from "../cli/export";
 import { logger } from "../utils/logger";
 
 const packageJson = JSON.parse(
@@ -150,6 +151,89 @@ Examples:
   .action(async () => {
     try {
       await presetAddCommand();
+    } catch (error) {
+      process.exit(1);
+    }
+  });
+
+program
+  .command("export <platform>")
+  .description("Export theme to specific platform (sublime, vscode, zed, notepad++, intellij)")
+  .option("-o, --output <path>", "Output directory for exported files")
+  .addHelpText("after", `
+Export theme to single platform in a custom output directory.
+Useful for testing individual platform exports before packaging.
+
+Platforms:
+  sublime      - Sublime Text color scheme
+  vscode       - VS Code theme
+  zed          - Zed editor theme
+  notepad++    - Notepad++ syntax highlighting
+  intellij     - JetBrains IDEs (IntelliJ IDEA, PyCharm, WebStorm, Rider)
+
+Examples:
+  $ themebooth export sublime
+  $ themebooth export sublime -o ./my-sublime-export
+  $ themebooth export vscode
+  $ themebooth export intellij
+  `)
+  .action(async (platform, options) => {
+    try {
+      if (platform.toLowerCase() === "intellij") {
+        await exportIntellijCommand(options);
+      } else {
+        await exportCommand(platform, options);
+      }
+    } catch (error) {
+      process.exit(1);
+    }
+  });
+
+program
+  .command("export-sublime-package")
+  .description("Create Sublime Text package for Package Control submission")
+  .option("-n, --name <name>", "Package name (default: sublime-{theme-name})")
+  .option("-o, --output <path>", "Output directory")
+  .option("--url <url>", "Package repository URL (for Package Control)")
+  .option("--homepage <url>", "Homepage URL")
+  .option("--dev", "Create development package (.no-sublime-package)")
+  .addHelpText("after", `
+Creates complete Sublime Text package structure ready for submission
+to Package Control. Includes color scheme, UI theme, and metadata.
+
+Examples:
+  $ themebooth export-sublime-package
+  $ themebooth export-sublime-package -n my-cool-theme
+  $ themebooth export-sublime-package --url https://github.com/user/repo
+  `)
+  .action(async (options) => {
+    try {
+      await exportSublimePackageCommand(options);
+    } catch (error) {
+      process.exit(1);
+    }
+  });
+
+program
+  .command("export-intellij-package")
+  .description("Create JetBrains plugin package for Marketplace submission")
+  .option("-n, --name <name>", "Package name (default: intellij-{theme-name})")
+  .option("-o, --output <path>", "Output directory")
+  .option("--format <jar|zip>", "Package format", "jar")
+  .addHelpText("after", `
+Creates complete JetBrains plugin package ready for submission
+to the JetBrains Marketplace. Includes .icls color scheme and plugin.xml metadata.
+
+Supports: IntelliJ IDEA, PyCharm, WebStorm, Rider
+
+Examples:
+  $ themebooth export-intellij-package
+  $ themebooth export-intellij-package -n my-cool-theme
+  $ themebooth export-intellij-package --format zip
+  `)
+  .action(async (options) => {
+    try {
+      await exportIntellijPackageCommand(options);
     } catch (error) {
       process.exit(1);
     }

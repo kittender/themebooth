@@ -1,0 +1,98 @@
+{
+  "name": "One Dark Pro",
+  "author": "Example Author",
+  "version": "1.0.0",
+  "description": "A professional dark theme for JetBrains IDEs, inspired by VS Code One Dark Pro",
+
+  "variables": {
+    "darkBg": "#1e1e1e",
+    "lightFg": "#d4d4d4",
+    "accentBlue": "#569cd6",
+    "accentString": "#ce9178",
+    "accentComment": "#6a9955",
+    "accentFunction": "#dcdcaa",
+    "accentVariable": "#9cdcfe",
+    "accentClass": "#4ec9b0",
+    "accentConstant": "#4fc1ff"
+  },
+
+  "colors": {
+    "editor.background": "$darkBg",
+    "editor.foreground": "$lightFg",
+    "editor.lineNumbers": "#858585",
+    "editor.lineNumbersBackground": "#1e1e1e",
+    "editor.selection": "#264f78",
+    "editor.selectionForeground": null,
+    "editor.cursor": "$lightFg",
+    "editor.cursorLine": "#1f1f1f",
+    "editor.indentGuide": "#404040",
+    "editor.whitespace": "#3e3e42"
+  },
+
+  "tokens": {
+    "keyword": {
+      "foreground": "$accentBlue"
+    },
+    "string": {
+      "foreground": "$accentString"
+    },
+    "string.template": {
+      "foreground": "$accentString"
+    },
+    "comment": {
+      "foreground": "$accentComment",
+      "fontStyle": "italic"
+    },
+    "comment.line": {
+      "foreground": "$accentComment"
+    },
+    "comment.block": {
+      "foreground": "$accentComment"
+    },
+    "function": {
+      "foreground": "$accentFunction"
+    },
+    "function.call": {
+      "foreground": "$accentFunction"
+    },
+    "function.declaration": {
+      "foreground": "$accentFunction"
+    },
+    "variable": {
+      "foreground": "$accentVariable"
+    },
+    "variable.declaration": {
+      "foreground": "$accentVariable"
+    },
+    "variable.parameter": {
+      "foreground": "$accentVariable"
+    },
+    "class": {
+      "foreground": "$accentClass"
+    },
+    "class.declaration": {
+      "foreground": "$accentClass"
+    },
+    "type": {
+      "foreground": "$accentClass"
+    },
+    "constant": {
+      "foreground": "$accentConstant"
+    },
+    "number": {
+      "foreground": "#b5cea8"
+    },
+    "boolean": {
+      "foreground": "$accentBlue"
+    },
+    "operator": {
+      "foreground": "$lightFg"
+    },
+    "tag": {
+      "foreground": "$accentBlue"
+    },
+    "attribute": {
+      "foreground": "$accentVariable"
+    }
+  }
+}

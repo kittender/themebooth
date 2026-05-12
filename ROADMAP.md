@@ -1,7 +1,7 @@
 # Theme Booth Roadmap
 
-## v1: Easy Tier Support
-Target: VS Code, Notepad++, Zed
+## v1: Easy Tier Support ✓ (In Progress)
+Target: VS Code, Sublime Text, Notepad++, Zed
 
 **Goals:**
 - Simple JSON-based theme editor
@@ -17,13 +17,19 @@ Target: VS Code, Notepad++, Zed
 - Templates for each easy-tier editor
 - Documentation for one-click publishing
 
+**Status:** 
+- ✓ VS Code, Notepad++, Zed supported
+- ✓ Sublime Text multi-file export (color scheme + UI theme)
+- ✓ Sublime Package Control publishing integration
+- ✓ CLI export commands for individual platforms
+
 **Complexity:** Low
 **Estimated Effort:** ~2-3 weeks
 
 ---
 
 ## v2: Medium Tier Support
-Target: Sublime Text, IntelliJ IDEA, PyCharm
+Target: IntelliJ IDEA, PyCharm
 
 **Goals:**
 - Support multi-file theme structures
@@ -31,7 +37,6 @@ Target: Sublime Text, IntelliJ IDEA, PyCharm
 - Plugin metadata generation (plugin.xml, extension.toml)
 - Package building workflows
 - JetBrains Marketplace integration
-- Sublime Package Control publishing
 
 **Core Features:**
 - Multi-file theme templates

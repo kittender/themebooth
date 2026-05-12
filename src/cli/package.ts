@@ -26,6 +26,24 @@ const PUBLISH_README = `# How to Publish Your Theme
    vsce publish --token <YOUR_TOKEN>
    \`\`\`
 
+## Sublime Text
+
+1. Create a GitHub repository for your theme package
+
+2. Commit the \`{theme-name}.sublime-color-scheme.json\` and \`{theme-name}.sublime-theme.json\` to \`color-schemes/\` directory
+
+3. Build a Sublime package:
+   \`\`\`bash
+   themebooth export-sublime-package --url https://github.com/user/repo
+   \`\`\`
+
+4. Submit to Package Control:
+   - Fork https://github.com/wbond/package_control_channel
+   - Add entry to \`repository.json\` with your repository URL
+   - Create pull request at https://github.com/wbond/package_control_channel
+
+See detailed guide: https://packagecontrol.io/docs/submit
+
 ## Notepad++
 
 1. Go to https://github.com/notepad-plus-plus/nppPluginList
@@ -52,6 +70,7 @@ const PUBLISH_README = `# How to Publish Your Theme
 
 Generated theme files:
 - VS Code: \`.json\` format
+- Sublime Text: \`.sublime-color-scheme.json\` and \`.sublime-theme.json\`
 - Notepad++: \`.xml\` format
 - Zed: \`zed-*.json\` format
 `;

@@ -78,6 +78,47 @@ export const AtomOverlaySchema = z.object({
   tokenOverrides: z.record(z.record(z.union([hexColorSchema, z.string()]))).optional(),
 });
 
+// JetBrains Color Scheme Schema (Task 2.3)
+export const JetBrainsColorSchemeSchema = z.object({
+  name: z.string().min(1, "Theme name is required"),
+  version: z.string().default("142"),
+  parentScheme: z.string().default("Default"),
+  options: z.array(
+    z.object({
+      name: z.string().min(1),
+      value: z.string(),
+    })
+  ),
+  colors: z.record(hexColorSchema).optional(),
+  attributesGroups: z.array(
+    z.object({
+      name: z.string(),
+      attributes: z.array(
+        z.object({
+          name: z.string(),
+          baseAttribute: z.string().optional(),
+          value: z.string().optional(),
+        })
+      ),
+    })
+  ),
+});
+
+// JetBrains Overlay Validation Schema (Task 2.3)
+export const JetBrainsOverlaySchema = z.object({
+  inherits: z.string(),
+  colors: z.record(hexColorSchema).optional(),
+  tokenOverrides: z.record(z.record(z.union([hexColorSchema, z.string()]))).optional(),
+  semanticTokens: z.record(z.record(z.union([hexColorSchema, z.string()]))).optional(),
+});
+
+// JetBrains Attribute Validation Schema
+export const JetBrainsAttributeSchema = z.object({
+  name: z.string(),
+  baseAttribute: z.string().optional(),
+  value: z.string().optional(),
+});
+
 // Export type inferences
 export type SublimeTheme = z.infer<typeof SublimeThemeSchema>;
 export type VimColorScheme = z.infer<typeof VimColorSchemeSchema>;
@@ -85,3 +126,6 @@ export type AtomTheme = z.infer<typeof AtomThemeSchema>;
 export type SublimeOverlay = z.infer<typeof SublimeOverlaySchema>;
 export type VimOverlay = z.infer<typeof VimOverlaySchema>;
 export type AtomOverlay = z.infer<typeof AtomOverlaySchema>;
+export type JetBrainsColorScheme = z.infer<typeof JetBrainsColorSchemeSchema>;
+export type JetBrainsOverlay = z.infer<typeof JetBrainsOverlaySchema>;
+export type JetBrainsAttribute = z.infer<typeof JetBrainsAttributeSchema>;
